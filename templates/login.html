@@ -3,26 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login Form</title>
+<title>Login — DodoPizza</title>
 <style>
 body {
   font-family: Arial, sans-serif;
-  background-color: #f3f4f6;
+  background-color: #fff7ed;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  margin: 0;
 }
 .login-container {
   background: white;
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  width: 300px;
+  width: 320px;
 }
 h2 {
   text-align: center;
   margin-bottom: 1.5rem;
+  color: #f97316;
 }
 .form-group {
   margin-bottom: 1rem;
@@ -43,7 +45,7 @@ input[type="password"] {
 button {
   width: 100%;
   padding: 0.7rem;
-  background-color: #2563eb;
+  background-color: #f97316;
   color: white;
   border: none;
   border-radius: 6px;
@@ -51,24 +53,45 @@ button {
   font-size: 1rem;
 }
 button:hover {
-  background-color: #1d4ed8;
+  background-color: #ea580c;
+}
+p {
+  text-align: center;
+  margin-top: 1rem;
+}
+a {
+  color: #f97316;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+.logo {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+.logo span {
+  color: #f97316;
+  font-weight: bold;
 }
 </style>
 </head>
 <body>
 <div class="login-container">
-<h2>Login</h2>
-<form action="/login" method="POST">
-<div class="form-group">
-<label for="username">Username</label>
-<input id="username" type="text" name="username" required>
-</div>
-<div class="form-group">
-<label for="password">Password</label>
-<input id="password" type="password" name="password" required>
-</div>
-<button type="submit">Sign In</button>
-</form>
+  <div class="logo"><span>DodoPizza</span></div>
+  <form action="/login" method="POST">
+    <div class="form-group">
+      <label for="login">Login</label>
+      <input id="login" type="text" name="login" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input id="password" type="password" name="password" required>
+    </div>
+    <button type="submit">Sign In</button>
+    <p>Don't have an account? <a href="/register">Register</a></p>
+  </form>
 </div>
 </body>
 </html>

@@ -11,6 +11,7 @@ public class Router {
         routes = new HashMap<>();
         routes.put("/", "index");
         routes.put("/login", "login");
+        routes.put("/register", "register");
     }
 
     public String getTemplateName(String route) {

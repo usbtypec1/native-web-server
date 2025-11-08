@@ -9,15 +9,19 @@ public class User {
     this.sessionId = sessionId;
   }
 
-  String getLogin() {
+  public String getLogin() {
     return login;
   }
 
-  String getPasswordHash() {
+  public String getPasswordHash() {
     return passwordHash;
   }
 
-  String sessionId() {
+  public String sessionId() {
     return sessionId;
+  }
+
+  public void setSessionId(String sessionId) {
+    this.sessionId = sessionId;
   }
 }
