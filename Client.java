@@ -28,7 +28,7 @@ public class Client implements Runnable {
       try {
         if (inputStream != null) {
           int unicode = inputStream.read();
-          char symbol = (char)unicode;
+          char symbol = (char) unicode;
           stringBuilder.append(symbol);
           if (inputStream.available() == 0) {
             break;
@@ -44,12 +44,20 @@ public class Client implements Runnable {
 
   public void run() {
     String inputData = getInputData();
-    if (inputData.isEmpty()) return;
+    if (inputData.isEmpty() || inputData.isBlank()) {
+      System.err.println("Empty request");
+      return;
+    }
 
     HttpRequest request = new HttpRequest(inputData);
     String route = request.getRoute();
     String method = request.getMethod();
     String body = request.getBody();
+
+    if (route == null || method == null) {
+      System.err.println("Empty request");
+      return;
+    }
 
     if (method.equalsIgnoreCase("POST")) {
       if (route.equals("/login")) {
@@ -73,24 +81,12 @@ public class Client implements Runnable {
           System.out.println("Error while verifying password");
         }
       } else if (route.equals("/register")) {
-        Map<String, String> parsedBody = request.getParsedBody();
-        UserRepository userRepository = new UserRepository("users");
-
-        String login = parsedBody.get("login");
-        String password = parsedBody.get("password");
-        try {
-          String passwordHash = PasswordHasher.hash(password);
-          User user = new User(login, passwordHash, SessionIdGenerator.generate(64));
-          userRepository.saveNewUser(user);
-        } catch (Exception e) {
-          System.out.println("Error while hashing password");
-        }
 
       }
     }
 
     HttpRequestHandler handler = router.getHandler(route, method);
-    handler.sendResponse(clientSocket);
+    handler.sendResponse(clientSocket, request);
   }
 
   public void go() {

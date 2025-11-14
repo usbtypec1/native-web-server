@@ -6,10 +6,10 @@ import java.net.Socket;
 
 public abstract class HttpRequestHandler {
 
-  public abstract String getResponseBody();
+  public abstract String getResponseBody(HttpRequest request);
 
-  public void sendResponse(Socket clientSocket) {
-    String responseBody = getResponseBody();
+  public void sendResponse(Socket clientSocket, HttpRequest request) {
+    String responseBody = getResponseBody(request);
     byte[] data = responseBody.getBytes();
     int fileLength = data.length;
 

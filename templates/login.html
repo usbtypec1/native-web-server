@@ -4,39 +4,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Register</title>
+  <title>Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body class="bg-gray-50 text-gray-800 flex items-center justify-center h-screen px-4">
   <div class="bg-white p-8 rounded-2xl shadow w-full max-w-md">
-    <h2 class="text-2xl font-bold text-center mb-6">Create Account</h2>
+    <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
 
-
-    <form class="space-y-4" method="post">
+    <form class="space-y-4">
       <div>
         <label>Login</label>
-        <input type="text" class="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300" />
+        <input type="email" class="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300" />
       </div>
       <div>
         <label>Password</label>
         <input type="password" class="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300" />
       </div>
-      <div>
-        <label>Password again</label>
-        <input type="password2"
-          class="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300" />
-      </div>
-
-
       <button class="w-full py-3 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600" type="submit">
-        Register
+        Login
       </button>
     </form>
 
-
-    <p class="text-center text-sm mt-4">Already have an account? <a href="/login" class="text-blue-500">Login</a>
+    <p class="text-center text-sm mt-4">Don't have an account? <a href="/register" class="text-blue-500">Register</a>
     </p>
   </div>
 </body>

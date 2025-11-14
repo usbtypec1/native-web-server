@@ -2,9 +2,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class IndexGetRouteHttpRequestHandler extends HttpRequestHandler {
+public class RegisterGetRouteHttpRequestHandler extends HttpRequestHandler {
+  
   public String getResponseBody(HttpRequest request) {
-    String filePath = "templates/index.html";
+    String filePath = "templates/register.html";
     try {
       return Files.readString(Paths.get(filePath));
     } catch (IOException e) {

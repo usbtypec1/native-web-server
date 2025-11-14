@@ -7,6 +7,8 @@ public class Router {
   public Router() {
     routes = new HashMap<>();
     registerHttpRequestHandler("/", "GET", new IndexGetRouteHttpRequestHandler());
+    registerHttpRequestHandler("/login", "GET", new LoginGetRouteHttpRequestHandler());
+    registerHttpRequestHandler("/register", "GET", new RegisterGetRouteHttpRequestHandler());
     registerHttpRequestHandler("/not-found", "GET", new NotFoundGetRouteHttpRequestHandler());
   }
 
@@ -19,7 +21,7 @@ public class Router {
   }
 
   private String buildRouteKey(String route, String method) {
-    return route + "@" + method;
+    return route.toLowerCase() + "@" + method.toLowerCase();
   }
 
   private HttpRequestHandler getNotFoundHandler() {

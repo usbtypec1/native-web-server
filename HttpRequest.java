@@ -57,6 +57,7 @@ public class HttpRequest {
   }
 
   private void parseRequestData(String rawRequestData) {
+    System.err.println("Request: " + rawRequestData);
     String[] headersAndBody = rawRequestData.split("\r\n\r\n", 2);
     String rawHeaders = headersAndBody[0];
     if (headersAndBody.length > 1) {
@@ -71,6 +72,9 @@ public class HttpRequest {
       if (requestLine.length >= 3) {
         method = requestLine[0];
         route = requestLine[1];
+        if (route != null) {
+          route = route.split("\\?")[0];
+        }
         httpVersion = requestLine[2];
       }
     }
