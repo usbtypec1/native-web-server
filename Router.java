@@ -1,35 +1,33 @@
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Router {
-    private Map<String, String> routes;
+  private final Map<String, HttpRequestHandler> routes;
 
-    public Router() {
-        routes = new HashMap<>();
-        routes.put("/", "index");
-        routes.put("/login", "login");
-        routes.put("/register", "register");
+  public Router() {
+    routes = new HashMap<>();
+    registerHttpRequestHandler("/", "GET", new IndexGetRouteHttpRequestHandler());
+    registerHttpRequestHandler("/not-found", "GET", new NotFoundGetRouteHttpRequestHandler());
+  }
+
+  private void registerHttpRequestHandler(String route, String method, HttpRequestHandler handler) {
+    String key = buildRouteKey(route, method);
+    if (routes.containsKey(key)) {
+      System.err.println("Route already registered.");
     }
+    routes.put(key, handler);
+  }
 
-    public String getTemplateName(String route) {
-        return routes.get(route);
-    }
+  private String buildRouteKey(String route, String method) {
+    return route + "@" + method;
+  }
 
-    public String readTemplate(String route) {
-        String templateName = getTemplateName(route);
-        if (templateName == null) {
-            return "<h1>404 Not Found</h1>";
-        }
+  private HttpRequestHandler getNotFoundHandler() {
+    return routes.get(buildRouteKey("/not-found", "GET"));
+  }
 
-        String filePath = "templates/" + templateName + ".html";
-        try {
-            return Files.readString(Paths.get(filePath));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "<h1>Error loading template</h1>";
-        }
-    }
+  public HttpRequestHandler getHandler(String route, String method) {
+    String key = buildRouteKey(route, method);
+    return routes.getOrDefault(key, getNotFoundHandler());
+  }
 }
