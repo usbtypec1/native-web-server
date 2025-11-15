@@ -6,7 +6,7 @@ public class SessionIdGenerator {
 
     public static String generate(int length) {
         if (length <= 0) {
-            throw new IllegalArgumentException("Length must be positive");
+            length = 64;
         }
 
         StringBuilder sb = new StringBuilder(length);

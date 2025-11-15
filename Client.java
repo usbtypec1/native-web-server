@@ -1,5 +1,8 @@
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Map;
 
@@ -14,7 +17,7 @@ public class Client implements Runnable {
     router = new Router();
   }
 
-  private String getInputData() {
+  private String readDataFromSocket() {
     InputStream inputStream = null;
     try {
       inputStream = clientSocket.getInputStream();
@@ -42,51 +45,43 @@ public class Client implements Runnable {
     return stringBuilder.toString();
   }
 
-  public void run() {
-    String inputData = getInputData();
-    if (inputData.isEmpty() || inputData.isBlank()) {
-      System.err.println("Empty request");
-      return;
-    }
+  private void writeDataToSocket(HttpResponse response) {
+    byte[] data = response.getBody();
+    int fileLength = data.length;
+    HttpResponseStatus status = response.getStatus();
 
-    HttpRequest request = new HttpRequest(inputData);
-    String route = request.getRoute();
-    String method = request.getMethod();
-    String body = request.getBody();
+    try {
+      OutputStream outputStream = clientSocket.getOutputStream();
+      PrintWriter printWriter = new PrintWriter(outputStream, true);
 
-    if (route == null || method == null) {
-      System.err.println("Empty request");
-      return;
-    }
+      printWriter.println("HTTP/1.1 " + status.getCode() + " " + status.getReason());
 
-    if (method.equalsIgnoreCase("POST")) {
-      if (route.equals("/login")) {
-        Map<String, String> parsedBody = request.getParsedBody();
-        UserRepository userRepository = new UserRepository("users");
-
-        String login = parsedBody.get("login");
-        String password = parsedBody.get("password");
-
-        User user = userRepository.readUserByLogin(login);
-        try {
-          boolean isVerified = PasswordHasher.verify(password, user.getPasswordHash());
-          if (isVerified) {
-            user.setSessionId(SessionIdGenerator.generate(64));
-            userRepository.updateUser(user);
-            System.out.println("User session id updated.");
-          } else {
-            System.out.println("User is not verified.");
-          }
-        } catch (Exception e) {
-          System.out.println("Error while verifying password");
-        }
-      } else if (route.equals("/register")) {
-
+      for (Map.Entry<String, String> header : response.getHeaders().entrySet()) {
+        printWriter.println(header.getKey() + ": " + header.getValue());
       }
+
+      printWriter.println("Server: Java HTTP Server from Intern Labs 7.0 - Java Backend Developer");
+      printWriter.println("Content-type: text/html; charset=UTF-8");
+      printWriter.println("Content-length: " + fileLength);
+      printWriter.println();
+      printWriter.flush();
+
+      BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
+      bufferedOutputStream.write(data, 0, fileLength);
+      bufferedOutputStream.flush();
+    } catch (IOException ioe) {
+      System.out.println("Error: " + ioe);
     }
 
-    HttpRequestHandler handler = router.getHandler(route, method);
-    handler.sendResponse(clientSocket, request);
+  }
+
+  public void run() {
+    String rawData = readDataFromSocket();
+    HttpRequestParser parser = new HttpRequestParser();
+    HttpRequest request = parser.parse(rawData);
+    HttpRequestHandler handler = router.match(request.getMethod(), request.getRoute());
+    HttpResponse response = handler.getResponse();
+    writeDataToSocket(response);
   }
 
   public void go() {
