@@ -3,7 +3,7 @@ import java.util.Map;
 
 public class RedirectHandler extends HttpRequestHandler {
 
-  protected HttpResponseStatus getStatus() {
+  protected HttpResponseStatus getResponseStatus() {
     return HttpResponseStatus.Found;
   }
   

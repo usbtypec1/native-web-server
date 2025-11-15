@@ -10,6 +10,7 @@ public class Router {
     postRoutes = new HashMap<>();
 
     getRoutes.put("/404", new NotFoundHandler());
+    getRoutes.put("/login", new LoginGetRequestHandler());
   }
 
   public HttpRequestHandler match(HttpRequestMethod method, String route) {
@@ -23,7 +24,6 @@ public class Router {
     if (handler == null) {
       handler = new RedirectHandler();
     }
-    System.out.println(handler);
 
     return handler;
   }

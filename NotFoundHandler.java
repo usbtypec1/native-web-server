@@ -3,7 +3,7 @@ import java.util.Map;
 
 public class NotFoundHandler extends HttpRequestHandler {
 
-  protected HttpResponseStatus getStatus() {
+  protected HttpResponseStatus getResponseStatus() {
     return HttpResponseStatus.NotFound;
   }
   
@@ -12,9 +12,7 @@ public class NotFoundHandler extends HttpRequestHandler {
   }
 
   protected Map<String, String> getResponseHeaders() {
-    System.out.println("Not found");
     Map<String, String> headers = new HashMap<>();
-
     return headers;
   }
 }
