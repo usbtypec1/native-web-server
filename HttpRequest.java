@@ -1,13 +1,13 @@
 import java.util.Map;
 
 public class HttpRequest {
-  private String method;
+  private HttpRequestMethod method;
   private String route;
   private Map<String, String> headers;
   private String body;
   private Map<String, String> form;
 
-  public HttpRequest(String method, String route, Map<String, String> headers, String body, Map<String, String> form) {
+  public HttpRequest(HttpRequestMethod method, String route, Map<String, String> headers, String body, Map<String, String> form) {
     this.method = method;
     this.route = route;
     this.headers = headers;
@@ -15,7 +15,7 @@ public class HttpRequest {
     this.form = form;
   }
 
-  public String getMethod() {
+  public HttpRequestMethod getMethod() {
     return method;
   }
 

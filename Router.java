@@ -8,12 +8,23 @@ public class Router {
   public Router() {
     getRoutes = new HashMap<>();
     postRoutes = new HashMap<>();
+
+    getRoutes.put("/404", new NotFoundHandler());
   }
 
-  public HttpRequestHandler match(String method, String route) {
-    if (method.equalsIgnoreCase("POST")) {
-      return postRoutes.get(route);
+  public HttpRequestHandler match(HttpRequestMethod method, String route) {
+    HttpRequestHandler handler = null;
+    if (method == HttpRequestMethod.Get) {
+      handler = getRoutes.get(route);
+    } else if (method == HttpRequestMethod.Post) {
+      handler = postRoutes.get(route);
     }
-    return getRoutes.get(route);
+
+    if (handler == null) {
+      handler = new RedirectHandler();
+    }
+    System.out.println(handler);
+
+    return handler;
   }
 }

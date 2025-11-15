@@ -55,12 +55,12 @@ public class Client implements Runnable {
       PrintWriter printWriter = new PrintWriter(outputStream, true);
 
       printWriter.println("HTTP/1.1 " + status.getCode() + " " + status.getReason());
+      printWriter.println("Server: Java HTTP Server from Intern Labs 7.0 - Java Backend Developer");
 
       for (Map.Entry<String, String> header : response.getHeaders().entrySet()) {
         printWriter.println(header.getKey() + ": " + header.getValue());
       }
 
-      printWriter.println("Server: Java HTTP Server from Intern Labs 7.0 - Java Backend Developer");
       printWriter.println("Content-type: text/html; charset=UTF-8");
       printWriter.println("Content-length: " + fileLength);
       printWriter.println();

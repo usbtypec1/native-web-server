@@ -2,7 +2,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequestParser {
-  private String method;
+  private HttpRequestMethod method;
   private String route;
   private Map<String, String> headers;
   private String body;
@@ -44,7 +44,7 @@ public class HttpRequestParser {
     if (lines.length > 0) {
       String[] reqLine = lines[0].split(" ");
       if (reqLine.length >= 3) {
-        method = reqLine[0];
+        method = HttpRequestMethod.parse(reqLine[0]);
         route = reqLine[1].split("\\?")[0];
       }
     }
