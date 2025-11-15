@@ -1,14 +1,14 @@
 import java.util.HashMap;
 import java.util.Map;
 
-public class NotFoundHandler extends HttpRequestHandler {
+public class NotFoundHandler extends HtmlTemplateHandler {
 
   protected HttpResponseStatus getResponseStatus() {
     return HttpResponseStatus.NotFound;
   }
   
-  protected String getResponseBody() {
-    return "Not found";
+  protected String getTemplateName() {
+    return "not-found.html";
   }
 
   protected Map<String, String> getResponseHeaders() {

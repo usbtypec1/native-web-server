@@ -71,6 +71,17 @@ public class Client implements Runnable {
       bufferedOutputStream.flush();
     } catch (IOException ioe) {
       System.out.println("Error: " + ioe);
+    }
+  }
+
+  public void run() {
+    try {
+      String rawData = readDataFromSocket();
+      HttpRequestParser parser = new HttpRequestParser();
+      HttpRequest request = parser.parse(rawData);
+      HttpRequestHandler handler = router.match(request.getMethod(), request.getRoute());
+      HttpResponse response = handler.getResponse();
+      writeDataToSocket(response);
     } finally {
       try {
         clientSocket.close();
@@ -78,15 +89,6 @@ public class Client implements Runnable {
         System.err.println("Could not close client socket: " + ioe);
       }
     }
-  }
-
-  public void run() {
-    String rawData = readDataFromSocket();
-    HttpRequestParser parser = new HttpRequestParser();
-    HttpRequest request = parser.parse(rawData);
-    HttpRequestHandler handler = router.match(request.getMethod(), request.getRoute());
-    HttpResponse response = handler.getResponse();
-    writeDataToSocket(response);
   }
 
   public void go() {

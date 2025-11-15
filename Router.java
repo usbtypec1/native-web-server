@@ -14,6 +14,8 @@ public class Router {
   }
 
   public HttpRequestHandler match(HttpRequestMethod method, String route) {
+    System.out.println(method.getValue() + " " + route);
+
     HttpRequestHandler handler = null;
     if (method == HttpRequestMethod.Get) {
       handler = getRoutes.get(route);

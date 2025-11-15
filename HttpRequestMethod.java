@@ -8,6 +8,10 @@ public enum HttpRequestMethod {
     this.value = value;
   }
 
+  public String getValue() {
+    return value;
+  }
+
   public boolean equals(String value) {
     return this.value.equalsIgnoreCase(value);
   }
