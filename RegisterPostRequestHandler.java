@@ -1,4 +1,5 @@
 import java.util.Map;
+import java.util.UUID;
 
 public class RegisterPostRequestHandler extends RedirectHandler {
 
@@ -25,7 +26,7 @@ public class RegisterPostRequestHandler extends RedirectHandler {
       System.out.print("Invalid hash");
       return null;
     }
-    User user = new User(username, passwordHash, SessionIdGenerator.generate(64));
+    User user = new User(UUID.randomUUID(), username, passwordHash, SessionIdGenerator.generate(64));
     repo.saveNewUser(user);
     return user.getSessionId();
   }
