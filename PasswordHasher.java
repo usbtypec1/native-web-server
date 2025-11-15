@@ -12,13 +12,25 @@ public class PasswordHasher {
   private static final int ITERATIONS = 200_000;
   private static final SecureRandom RNG = new SecureRandom();
 
-  public static String hash(String password) throws Exception {
+  public static String hash(String password) {
     byte[] salt = new byte[16];
     RNG.nextBytes(salt);
     PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt, ITERATIONS, KEY_LENGTH);
-    SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-    byte[] hash = skf.generateSecret(spec).getEncoded();
+    SecretKeyFactory skf = null;
+    try {
+      skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+    } catch (NoSuchAlgorithmException e) {
+      System.err.println("Invalid hashing algorithm:" + e);
+      return null;
+    }
 
+    byte[] hash = null;
+    try {
+      hash = skf.generateSecret(spec).getEncoded();
+    } catch (InvalidKeySpecException e) {
+      System.err.println("Invalid key spec:" + e);
+      return null;
+    }
     Encoder encoder = Base64.getEncoder();
     String encodedSalt = encoder.encodeToString(salt);
     String encodedPasswordHash = encoder.encodeToString(hash);
@@ -38,6 +50,7 @@ public class PasswordHasher {
     try {
       skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
     } catch (NoSuchAlgorithmException e) {
+      System.err.println("Invalid hashing algorithm:" + e);
       return false;
     }
 
@@ -45,6 +58,7 @@ public class PasswordHasher {
     try {
       testHash = skf.generateSecret(spec).getEncoded();
     } catch (InvalidKeySpecException e) {
+      System.err.println("Invalid key spec:" + e);
       return false;
     }
 
