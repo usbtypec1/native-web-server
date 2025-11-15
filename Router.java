@@ -9,8 +9,13 @@ public class Router {
     getRoutes = new HashMap<>();
     postRoutes = new HashMap<>();
 
-    getRoutes.put("/404", new NotFoundHandler());
-    getRoutes.put("/login", new LoginGetRequestHandler());
+    getRoutes.put("/", new HtmlTemplateHandler("index.html"));
+    getRoutes.put("/404", new HtmlTemplateHandler("not-found.html"));
+    getRoutes.put("/login", new HtmlTemplateHandler("login.html"));
+    getRoutes.put("/register", new HtmlTemplateHandler("register.html"));
+
+    postRoutes.put("/register", new RegisterPostRequestHandler());
+    postRoutes.put("/login", new LoginPostRequestHandler());
   }
 
   public HttpRequestHandler match(HttpRequestMethod method, String route) {
@@ -24,7 +29,7 @@ public class Router {
     }
 
     if (handler == null) {
-      handler = new RedirectHandler();
+      handler = new RedirectHandler("/404");
     }
 
     return handler;

@@ -1,6 +1,7 @@
 public enum HttpResponseStatus {
   Ok(200, "OK"),
   Found(302, "Found"),
+  SeeOther(303, "See Other"),
   Unauthorized(401, "Unauthorized"),
   Forbidden(403, "Forbidden"),
   NotFound(404, "Not Found"),
