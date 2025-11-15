@@ -17,7 +17,7 @@ public class User {
     return passwordHash;
   }
 
-  public String sessionId() {
+  public String getSessionId() {
     return sessionId;
   }
 

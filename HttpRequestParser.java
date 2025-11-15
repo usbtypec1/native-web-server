@@ -29,6 +29,8 @@ public class HttpRequestParser {
         result.put(kv[0], kv[1]);
       }
     }
+
+    form = result;
   }
 
   private void parseRequestData(String raw) {

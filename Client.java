@@ -80,7 +80,7 @@ public class Client implements Runnable {
       HttpRequestParser parser = new HttpRequestParser();
       HttpRequest request = parser.parse(rawData);
       HttpRequestHandler handler = router.match(request.getMethod(), request.getRoute());
-      HttpResponse response = handler.getResponse();
+      HttpResponse response = handler.getResponse(request);
       writeDataToSocket(response);
     } finally {
       try {

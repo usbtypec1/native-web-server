@@ -11,7 +11,7 @@ public class HtmlTemplateHandler extends HttpRequestHandler {
     this.templateName = templateName;
   }
 
-  protected HttpResponseStatus getResponseStatus() {
+  protected HttpResponseStatus getResponseStatus(HttpRequest request) {
     return HttpResponseStatus.Ok;
   }
 
@@ -19,11 +19,11 @@ public class HtmlTemplateHandler extends HttpRequestHandler {
     return templateName;
   }
 
-  protected Map<String, String> getResponseHeaders() {
+  protected Map<String, String> getResponseHeaders(HttpRequest request) {
     return new HashMap<String, String>();
   }
 
-  protected String getResponseBody() {
+  protected String getResponseBody(HttpRequest request) {
     try {
       return Files.readString(Path.of("templates", getTemplateName()));
     } catch (IOException ioe) {

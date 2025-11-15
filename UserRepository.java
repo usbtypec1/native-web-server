@@ -8,8 +8,8 @@ import java.util.List;
 public class UserRepository {
   private final Path storageDir;
 
-  public UserRepository(String storageDirPath) {
-    this.storageDir = Paths.get(storageDirPath);
+  public UserRepository() {
+    this.storageDir = Paths.get("users");
     try {
       if (!Files.exists(this.storageDir)) {
         Files.createDirectories(this.storageDir);
@@ -70,7 +70,7 @@ public class UserRepository {
     String content =
     "login=" + user.getLogin() + "\n" +
     "passwordHash=" + user.getPasswordHash() + "\n" +
-    "sessionId=" + user.sessionId() + "\n";
+    "sessionId=" + user.getSessionId() + "\n";
     try {
       Files.write(userFile, content.getBytes(StandardCharsets.UTF_8));
     } catch (IOException e) {
