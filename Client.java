@@ -71,8 +71,13 @@ public class Client implements Runnable {
       bufferedOutputStream.flush();
     } catch (IOException ioe) {
       System.out.println("Error: " + ioe);
+    } finally {
+      try {
+        clientSocket.close();
+      } catch (IOException ioe) {
+        System.err.println("Could not close client socket: " + ioe);
+      }
     }
-
   }
 
   public void run() {
