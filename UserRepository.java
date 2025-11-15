@@ -3,16 +3,19 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class UserRepository {
   private final Path storageDir;
 
   public UserRepository() {
-    this.storageDir = Paths.get("users");
+    storageDir = Paths.get("users");
     try {
-      if (!Files.exists(this.storageDir)) {
-        Files.createDirectories(this.storageDir);
+      if (!Files.exists(storageDir)) {
+        Files.createDirectories(storageDir);
       }
     } catch (IOException e) {
       throw new RuntimeException("Failed to create storage directory", e);
@@ -27,32 +30,28 @@ public class UserRepository {
     writeUserToFile(userFile, user);
   }
 
-  public User readUserByLogin(String login) {
-    Path userFile = storageDir.resolve(login + ".txt");
+  public User readUserByUsername(String username) {
+    Path userFile = storageDir.resolve(username + ".txt");
     if (!Files.exists(userFile)) {
       return null;
     }
     try {
       List<String> lines = Files.readAllLines(userFile, StandardCharsets.UTF_8);
-      String loginValue = null;
-      String passwordHashValue = null;
-      String sessionIdValue = null;
+      UUID id = UUID.fromString(lines.get(0));
+      String passwordHash = lines.get(1);
+      String sessionId = lines.get(2);
 
-      for (String line : lines) {
-        if (line.startsWith("login=")) {
-          loginValue = line.substring("login=".length());
-        } else if (line.startsWith("passwordHash=")) {
-          passwordHashValue = line.substring("passwordHash=".length());
-        } else if (line.startsWith("sessionId=")) {
-          sessionIdValue = line.substring("sessionId=".length());
-        }
+      List<Post> posts = new ArrayList<>();
+      for (String line : lines.subList(3, lines.size())) {
+        String[] postLine = line.split("\",\"");
+        UUID postId = UUID.fromString(postLine[0]);
+        String postTitle = postLine[1];
+        String postContent = postLine[2];
+        Instant postCreatedAt = Instant.parse(postLine[3]);
+        posts.add(new Post(postId, postTitle, postContent, postCreatedAt));
       }
 
-      if (loginValue == null || passwordHashValue == null) {
-        throw new IOException("Corrupted user file: " + userFile);
-      }
-
-      return new User(loginValue, passwordHashValue, sessionIdValue);
+      return new User(id, username, passwordHash, sessionId);
     } catch (IOException e) {
       throw new RuntimeException("Failed to read user file: " + userFile, e);
     }
@@ -68,7 +67,7 @@ public class UserRepository {
 
   private void writeUserToFile(Path userFile, User user) {
     String content =
-    "login=" + user.getLogin() + "\n" +
+    "id=" + user.getId().toString() + "\n" +
     "passwordHash=" + user.getPasswordHash() + "\n" +
     "sessionId=" + user.getSessionId() + "\n";
     try {

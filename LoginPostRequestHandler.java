@@ -8,7 +8,7 @@ public class LoginPostRequestHandler extends RedirectHandler {
 
   private String loginUser(String username, String password) {
     UserRepository repo = new UserRepository();
-    User user = repo.readUserByLogin(username);
+    User user = repo.readUserByUsername(username);
     if (user == null) {
       return null;
     }
