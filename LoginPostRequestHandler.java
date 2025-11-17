@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,9 +64,15 @@ public class LoginPostRequestHandler implements HttpRequestHandler {
       return new HttpResponse(HttpResponseStatus.BadRequest, null, body);
     }
 
-    HttpResponse response = new RedirectResponse("/");
-    String cookie = String.format("sessionId=%s; Path=/; HttpOnly; Max-Age=3600", SessionIdGenerator.generate(255));
-    response.getHeaders().setHeader("Set-Cookie", cookie);
-    return response;
+    try {
+      SessionManager sessionManager = new SessionManager(3600 * 1000);
+      HttpResponse response = new RedirectResponse("/");
+      String cookie = String.format("sessionId=%s; Path=/; HttpOnly; Max-Age=3600",
+          sessionManager.createSession(username));
+      response.getHeaders().setHeader("Set-Cookie", cookie);
+      return response;
+    } catch (IOException ioe) {
+      return new HttpResponse(HttpResponseStatus.InternalServerError, null, "Server error");
+    }
   }
 }

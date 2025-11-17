@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -64,16 +65,19 @@ public class RegisterPostRequestHandler implements HttpRequestHandler {
     // Hash the password securely
     String hashedPassword = PasswordHasher.hash(password);
 
-    // Save user
-    String session = SessionIdGenerator.generate(255);
-    User newUser = new User(UUID.randomUUID(), username, hashedPassword, session);
-    userRepository.createUser(newUser);
+    try {
+      SessionManager sessionManager = new SessionManager(3600 * 1000);
+      String session = sessionManager.createSession(username);
+      User newUser = new User(UUID.randomUUID(), username, hashedPassword, session);
+      userRepository.createUser(newUser);
 
-    // Auto-login after registration
-    HttpResponse response = new RedirectResponse("/");
-    String cookie = String.format("sessionId=%s; Path=/; HttpOnly; Max-Age=3600", session);
-    response.getHeaders().setHeader("Set-Cookie", cookie);
+      HttpResponse response = new RedirectResponse("/");
+      String cookie = String.format("sessionId=%s; Path=/; HttpOnly; Max-Age=3600", session);
+      response.getHeaders().setHeader("Set-Cookie", cookie);
+      return response;
+    } catch (IOException ioe) {
+      return new HttpResponse(HttpResponseStatus.InternalServerError, null, "Server error");
+    }
 
-    return response;
   }
 }
