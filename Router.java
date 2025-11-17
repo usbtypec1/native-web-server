@@ -9,13 +9,13 @@ public class Router {
     getRoutes = new HashMap<>();
     postRoutes = new HashMap<>();
 
-    getRoutes.put("/", new HtmlTemplateHandler("index.html"));
-    getRoutes.put("/404", new HtmlTemplateHandler("not-found.html"));
-    getRoutes.put("/login", new HtmlTemplateHandler("login.html"));
-    getRoutes.put("/register", new HtmlTemplateHandler("register.html"));
+    getRoutes.put("/", new SimpleHtmlPageHandler("index.html"));
+    getRoutes.put("/404", new SimpleHtmlPageHandler("not-found.html"));
+    // getRoutes.put("/login", new HtmlTemplateHandler("login.html"));
+    // getRoutes.put("/register", new HtmlTemplateHandler("register.html"));
 
-    postRoutes.put("/register", new RegisterPostRequestHandler());
-    postRoutes.put("/login", new LoginPostRequestHandler());
+    // postRoutes.put("/register", new RegisterPostRequestHandler());
+    // postRoutes.put("/login", new LoginPostRequestHandler());
   }
 
   public HttpRequestHandler match(HttpRequestMethod method, String route) {

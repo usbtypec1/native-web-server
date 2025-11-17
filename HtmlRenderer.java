@@ -5,13 +5,9 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 public class HtmlRenderer {
-  private final Path templatesDir;
+  private static final Path templatesDir = Paths.get("templates");
 
-  public HtmlRenderer() {
-    templatesDir = Paths.get("templates");
-  }
-
-  private String readTemplateFromFile(String templateName) {
+  public static String readTemplateFromFile(String templateName) {
     try {
       return Files.readString(templatesDir.resolve(templateName));
     } catch (IOException ioe) {
@@ -19,7 +15,7 @@ public class HtmlRenderer {
     }
   }
 
-  public String render(String templateName, Map<String, String> variables) {
+  public static String renderWithVariables(String templateName, Map<String, String> variables) {
     String result = readTemplateFromFile(templateName);
     if (variables == null) {
       return result;

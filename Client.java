@@ -46,8 +46,6 @@ public class Client implements Runnable {
   }
 
   private void writeDataToSocket(HttpResponse response) {
-    byte[] data = response.getBody();
-    int fileLength = data.length;
     HttpResponseStatus status = response.getStatus();
 
     try {
@@ -57,18 +55,18 @@ public class Client implements Runnable {
       printWriter.println("HTTP/1.1 " + status.getCode() + " " + status.getReason());
       printWriter.println("Server: Java HTTP Server from Intern Labs 7.0 - Java Backend Developer");
 
-      for (Map.Entry<String, String> header : response.getHeaders().entrySet()) {
-        printWriter.println(header.getKey() + ": " + header.getValue());
+      for (String line : response.getHeaders().toLines()) {
+        printWriter.println(line);
       }
-
-      printWriter.println("Content-type: text/html; charset=UTF-8");
-      printWriter.println("Content-length: " + fileLength);
       printWriter.println();
       printWriter.flush();
 
-      BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
-      bufferedOutputStream.write(data, 0, fileLength);
-      bufferedOutputStream.flush();
+      int contentLength = response.getContentLength();
+      if (contentLength > 0) {
+        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
+        bufferedOutputStream.write(response.getBody(), 0, contentLength);
+        bufferedOutputStream.flush();
+      }
     } catch (IOException ioe) {
       System.out.println("Error: " + ioe);
     }
