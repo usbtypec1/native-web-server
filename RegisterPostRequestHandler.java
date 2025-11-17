@@ -27,7 +27,7 @@ public class RegisterPostRequestHandler extends RedirectHandler {
       return null;
     }
     User user = new User(UUID.randomUUID(), username, passwordHash, SessionIdGenerator.generate(64));
-    repo.saveNewUser(user);
+    repo.createUser(user);
     return user.getSessionId();
   }
 

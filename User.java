@@ -2,13 +2,13 @@ import java.util.UUID;
 
 public class User {
   private UUID id;
-  private String login;
+  private String username;
   private String passwordHash;
   private String sessionId;
 
-  public User(UUID id, String login, String passwordHash, String sessionId) {
+  public User(UUID id, String username, String passwordHash, String sessionId) {
     this.id = id;
-    this.login = login;
+    this.username = username;
     this.passwordHash = passwordHash;
     this.sessionId = sessionId;
   }
@@ -17,8 +17,8 @@ public class User {
     return id;
   }
 
-  public String getLogin() {
-    return login;
+  public String getUsername() {
+    return username;
   }
 
   public String getPasswordHash() {

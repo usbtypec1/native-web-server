@@ -8,7 +8,7 @@ public class LoginPostRequestHandler extends RedirectHandler {
 
   private String loginUser(String username, String password) {
     UserRepository repo = new UserRepository();
-    User user = repo.readUserByUsername(username);
+    User user = repo.getUserByUsername(username);
     if (user == null) {
       return null;
     }
@@ -16,7 +16,7 @@ public class LoginPostRequestHandler extends RedirectHandler {
       return null;
     }
     user.setSessionId(SessionIdGenerator.generate(64));
-    repo.saveNewUser(user);
+    repo.createUser(user);
     return user.getSessionId();
   }
 
