@@ -3,12 +3,14 @@ import java.util.UUID;
 
 public class Post {
   private UUID id;
+  private String username;
   private String title;
   private String content;
   private Instant createdAt;
 
-  public Post(UUID id, String title, String content, Instant createdAt) {
+  public Post(UUID id, String username, String title, String content, Instant createdAt) {
     this.id = id;
+    this.username = username;
     this.title = title;
     this.content = content;
     this.createdAt = createdAt;
@@ -16,6 +18,10 @@ public class Post {
 
   public UUID getId() {
     return id;
+  }
+
+  public String getUsername() {
+    return username;
   }
 
   public String getTitle() {

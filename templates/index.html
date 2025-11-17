@@ -11,7 +11,7 @@
 
 <body class="bg-gray-50 text-gray-800">
   <header class="p-4 shadow-md bg-white flex justify-between items-center">
-    <h1 class="text-xl font-bold">Brand</h1>
+    <h1 class="text-xl font-bold"><a href="/"><i class="fa-solid fa-comment"></i> Postland</a></h1>
     <nav class="space-x-4 text-sm">
       <a href="/about" class="hover:text-blue-500">About</a>
       <a href="/login" class="hover:text-blue-500">Login</a>
@@ -19,12 +19,12 @@
     </nav>
   </header>
 
-
-  <main class="flex flex-col items-center text-center px-6 mt-12">
-    <h2 class="text-4xl font-bold mb-4">Welcome to Our Website</h2>
-    <p class="text-gray-600 max-w-xl mb-6">A clean and modern interface designed for great usability across all devices.
-    </p>
-    <a href="/about" class="px-6 py-3 bg-blue-500 text-white rounded-xl shadow hover:bg-blue-600">Learn More</a>
+  <main class="flex flex-col items-center text-center px-6 mt-12 mb-6">
+    <h2 class="text-4xl font-bold mb-4">Welcome to Postland</h2>
+    <p class="text-gray-600 max-w-xl mb-6">It's the place where everyone can share their thoughts and ideas.</p>
+    <a href="/posts/create" class="px-6 py-3 bg-blue-500 text-white rounded-xl shadow hover:bg-blue-600">
+      <i class="fa-solid fa-pen"></i> Write a post</a>
+    {posts}
   </main>
 </body>
 

@@ -66,9 +66,9 @@ public class UserRepository {
   }
 
   private void writeUserToFile(Path userFile, User user) {
-    String content = "id=" + user.getId().toString() + "\n" +
-        "passwordHash=" + user.getPasswordHash() + "\n" +
-        "sessionId=" + user.getSessionId() + "\n";
+    String content = user.getId().toString() + "\n" +
+        user.getPasswordHash() + "\n" +
+        user.getSessionId() + "\n";
     try {
       Files.write(userFile, content.getBytes(StandardCharsets.UTF_8));
     } catch (IOException e) {

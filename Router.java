@@ -9,7 +9,7 @@ public class Router {
     getRoutes = new HashMap<>();
     postRoutes = new HashMap<>();
 
-    getRoutes.put("/", new SimpleHtmlPageHandler("index.html"));
+    getRoutes.put("/", new IndexRequestHandler());
     getRoutes.put("/404", new SimpleHtmlPageHandler("not-found.html"));
     // getRoutes.put("/login", new HtmlTemplateHandler("login.html"));
     // getRoutes.put("/register", new HtmlTemplateHandler("register.html"));

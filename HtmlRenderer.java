@@ -21,7 +21,7 @@ public class HtmlRenderer {
       return result;
     }
     for (Map.Entry<String, String> e : variables.entrySet()) {
-      String placeholder = "{{" + e.getKey() + "}}";
+      String placeholder = "{" + e.getKey() + "}";
       result = result.replace(placeholder, e.getValue());
     }
     return result;
