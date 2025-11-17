@@ -17,6 +17,7 @@ public class Router {
 
     postRoutes.put("/register", new RegisterPostRequestHandler());
     postRoutes.put("/login", new LoginPostRequestHandler());
+    postRoutes.put("/posts/create", new CreatePostPostRequestHandler());
   }
 
   public HttpRequestHandler match(HttpRequestMethod method, String route) {

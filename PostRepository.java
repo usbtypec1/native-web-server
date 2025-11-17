@@ -200,6 +200,23 @@ public class PostRepository {
     return result.toArray(new String[0]);
   }
 
+  public Post[] getAllPosts() throws StorageException {
+    List<String> lines;
+    try {
+      lines = Files.readAllLines(storageFile, StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      throw new StorageException("Failed to read posts file: " + e);
+    }
+
+    List<Post> result = new ArrayList<>();
+
+    for (int i = 1; i < lines.size(); i++) {
+      result.add(parsePost(lines.get(i)));
+    }
+
+    return result.toArray(new Post[0]);
+  }
+
   public Post[] getPosts(int limit, int offset) throws StorageException {
     if (offset < 0 || limit < 0) {
       throw new IllegalArgumentException("Offset and limit must be >= 0");

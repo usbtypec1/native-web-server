@@ -28,3 +28,4 @@ users/*
 .DS_Store
 
 sessions.txt
+posts.csv

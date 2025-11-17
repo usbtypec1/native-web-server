@@ -9,7 +9,13 @@ public class IndexRequestHandler implements HttpRequestHandler {
     PostRepository postRepository = new PostRepository();
     UserRepository userRepository = new UserRepository();
 
-    Post[] posts = postRepository.getPosts(10, 0);
+    Post[] posts = postRepository.getAllPosts();
+    
+    for (int i = 0; i < posts.length / 2; i++) {
+      Post temp = posts[i];
+      posts[i] = posts[posts.length - 1 - i];
+      posts[posts.length - 1 - i] = temp;
+    }
 
     StringBuilder builder = new StringBuilder();
 
