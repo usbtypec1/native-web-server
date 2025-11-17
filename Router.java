@@ -13,6 +13,7 @@ public class Router {
     getRoutes.put("/404", new SimpleHtmlPageHandler("not-found.html"));
     getRoutes.put("/login", new SimpleHtmlPageHandler("login.html"));
     getRoutes.put("/register", new SimpleHtmlPageHandler("register.html"));
+    getRoutes.put("/posts/create", new CreatePostGetRequestHandler());
 
     postRoutes.put("/register", new RegisterPostRequestHandler());
     postRoutes.put("/login", new LoginPostRequestHandler());

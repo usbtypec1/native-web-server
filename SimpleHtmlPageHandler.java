@@ -5,6 +5,10 @@ public class SimpleHtmlPageHandler implements HttpRequestHandler {
     this.templateName = templateName;
   }
 
+  protected String getTemplateName() {
+    return templateName;
+  };
+
   public HttpResponse getResponse(HttpRequest request) {
     return new HtmlTemplateResponse(HtmlRenderer.readTemplateFromFile(templateName));
   }

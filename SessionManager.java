@@ -32,7 +32,7 @@ public class SessionManager {
     return sessionId;
   }
 
-  public String getUsername(String sessionId) throws IOException {
+  public String getUsername(String session) throws IOException {
     List<String> lines = Files.readAllLines(file.toPath());
     long now = System.currentTimeMillis();
 
@@ -54,7 +54,7 @@ public class SessionManager {
         newContent.add(line);
       }
 
-      if (id.equals(sessionId) && !expired) {
+      if (id.equals(session) && !expired) {
         result = username;
       }
     }

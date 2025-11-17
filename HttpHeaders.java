@@ -10,11 +10,14 @@ import java.util.StringJoiner;
  * HTTP-compliant header lines.
  * </p>
  *
- * <p><strong>Usage example:</strong></p>
+ * <p>
+ * <strong>Usage example:</strong>
+ * </p>
+ * 
  * <pre>{@code
  * HttpHeaders headers = new HttpHeaders();
  * headers.setHeader("Content-Type", "application/json");
- * headers.setHeader("Set-Cookie", new String[]{"a=1", "b=2"});
+ * headers.setHeader("Set-Cookie", new String[] { "a=1", "b=2" });
  * String[] lines = headers.toLines();
  * }</pre>
  */
@@ -36,7 +39,8 @@ public class HttpHeaders {
    * @param value the header value; ignored if {@code null}
    */
   public void setHeader(String key, String value) {
-    if (key == null || value == null) return;
+    if (key == null || value == null)
+      return;
     headers.put(key, value);
   }
 
@@ -48,19 +52,54 @@ public class HttpHeaders {
    * @param values the array of values; ignored if {@code null}
    */
   public void setHeader(String key, String[] values) {
-    if (key == null || values == null) return;
+    if (key == null || values == null)
+      return;
     StringJoiner joiner = new StringJoiner(", ");
     for (String v : values) {
-      if (v != null) joiner.add(v);
+      if (v != null)
+        joiner.add(v);
     }
     headers.put(key, joiner.toString());
+  }
+
+  /**
+   * Extracts a session ID from the "Cookie" header.
+   *
+   * <p>
+   * This method looks for a cookie named "session" and returns its value.
+   * If the cookie does not exist or the Cookie header is missing, it returns
+   * {@code null}.
+   * </p>
+   *
+   * @return the session ID from cookies, or {@code null} if not present
+   */
+  public String getSession() {
+    String cookieHeader = headers.get("Cookie");
+    if (cookieHeader == null)
+      return null;
+
+    String[] pairs = cookieHeader.split(";");
+    for (String pair : pairs) {
+      String[] kv = pair.trim().split("=", 2);
+      if (kv.length == 2) {
+        String key = kv[0].trim();
+        String value = kv[1].trim();
+
+        if (key.equalsIgnoreCase("session")) {
+          return value;
+        }
+      }
+    }
+
+    return null;
   }
 
   /**
    * Converts all stored headers to an array of raw HTTP header lines.
    * <p>
    * Each element of the returned array has the format:
-   * <br>{@code "Header-Name: value"}
+   * <br>
+   * {@code "Header-Name: value"}
    * </p>
    *
    * @return an array of header lines ready for HTTP transmission

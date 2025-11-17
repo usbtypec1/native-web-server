@@ -72,7 +72,7 @@ public class RegisterPostRequestHandler implements HttpRequestHandler {
       userRepository.createUser(newUser);
 
       HttpResponse response = new RedirectResponse("/");
-      String cookie = String.format("sessionId=%s; Path=/; HttpOnly; Max-Age=3600", session);
+      String cookie = String.format("session=%s; Path=/; HttpOnly; Max-Age=3600", session);
       response.getHeaders().setHeader("Set-Cookie", cookie);
       return response;
     } catch (IOException ioe) {

@@ -67,7 +67,7 @@ public class LoginPostRequestHandler implements HttpRequestHandler {
     try {
       SessionManager sessionManager = new SessionManager(3600 * 1000);
       HttpResponse response = new RedirectResponse("/");
-      String cookie = String.format("sessionId=%s; Path=/; HttpOnly; Max-Age=3600",
+      String cookie = String.format("session=%s; Path=/; HttpOnly; Max-Age=3600",
           sessionManager.createSession(username));
       response.getHeaders().setHeader("Set-Cookie", cookie);
       return response;
