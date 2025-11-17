@@ -35,7 +35,13 @@ public class IndexRequestHandler implements HttpRequestHandler {
         """;
 
     for (Post post : posts) {
-      User user = users.computeIfAbsent(post.getUsername(), (username) -> userRepository.getUserByUsername(username));
+      User user = users.get(post.getUsername());
+      if (user == null) {
+        try {
+          user = userRepository.getUserByUsername(post.getUsername());
+        } catch (UserNotFoundException e) {
+        }
+      }
       String username = user != null ? user.getUsername() : "Anonymous";
 
       builder.append(

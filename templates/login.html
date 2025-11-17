@@ -13,20 +13,13 @@
   <div class="bg-white p-8 rounded-2xl shadow w-full max-w-md">
     <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
 
-    <!-- ERROR FIELD -->
-    <div class="mb-4 {{ isErrorHidden }}" id="error-box">
-      <span
-        class="block w-full bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2 animate-fade-in">
-        <i class="fa-solid fa-circle-exclamation"></i>
-        {{ errorMessage }}
-      </span>
-    </div>
+    {errorMessage}
 
     <form class="space-y-4" method="post">
       <div>
         <label>Username</label>
         <input type="text" class="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-          name="username" autocomplete="username" required />
+          name="username" autocomplete="username" value="{username}" required />
       </div>
       <div>
         <label>Password</label>

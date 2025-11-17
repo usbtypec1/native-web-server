@@ -28,6 +28,11 @@ public class UserRepository {
     writeUserToFile(userFile, user);
   }
 
+  public boolean existsByUsername(String username) throws StorageException {
+    Path userFile = buildUserFilePath(username);
+    return Files.exists(userFile);
+  }
+
   public User getUserByUsername(String username) throws UserNotFoundException, StorageException {
     Path userFile = resolveUserFilePath(username);
     try {

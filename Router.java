@@ -11,11 +11,11 @@ public class Router {
 
     getRoutes.put("/", new IndexRequestHandler());
     getRoutes.put("/404", new SimpleHtmlPageHandler("not-found.html"));
-    // getRoutes.put("/login", new HtmlTemplateHandler("login.html"));
-    // getRoutes.put("/register", new HtmlTemplateHandler("register.html"));
+    getRoutes.put("/login", new SimpleHtmlPageHandler("login.html"));
+    getRoutes.put("/register", new SimpleHtmlPageHandler("register.html"));
 
-    // postRoutes.put("/register", new RegisterPostRequestHandler());
-    // postRoutes.put("/login", new LoginPostRequestHandler());
+    postRoutes.put("/register", new RegisterPostRequestHandler());
+    postRoutes.put("/login", new LoginPostRequestHandler());
   }
 
   public HttpRequestHandler match(HttpRequestMethod method, String route) {
