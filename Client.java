@@ -52,7 +52,7 @@ public class Client implements Runnable {
       PrintWriter printWriter = new PrintWriter(outputStream, true);
 
       printWriter.println("HTTP/1.1 " + status.getCode() + " " + status.getReason());
-      printWriter.println("Server: Java HTTP Server from Intern Labs 7.0 - Java Backend Developer");
+      printWriter.println("Server: Java HTTP Server from Intern Labs 7.0 by Eldos Baktybek uulu - Java Backend Developer");
 
       for (String line : response.getHeaders().toLines()) {
         printWriter.println(line);

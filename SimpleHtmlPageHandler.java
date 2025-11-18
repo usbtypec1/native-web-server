@@ -33,7 +33,10 @@ public class SimpleHtmlPageHandler implements HttpRequestHandler {
       return HttpResponseFactory.createOkResponse(
           HtmlRenderer.readTemplateFromFile(templateName));
     } catch (IOException e) {
-      return HttpResponseFactory.createRedirectTo500Response();
+      if (!request.getRoute().equals("/500")) {
+        return HttpResponseFactory.createRedirectTo500Response();
+      }
+      return HttpResponseFactory.createInternalServerErrorResponse();
     }
   }
 }

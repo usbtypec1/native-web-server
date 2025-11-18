@@ -73,6 +73,8 @@ public class IndexRequestHandler implements HttpRequestHandler {
       String body = HtmlRenderer.renderWithVariables("index.html", Map.of("posts", builder.toString()));
       return HttpResponseFactory.createOkResponse(body);
     } catch (IOException e) {
+      e.printStackTrace();
+      System.err.println(e);
       return HttpResponseFactory.createRedirectTo500Response();
     }
   }

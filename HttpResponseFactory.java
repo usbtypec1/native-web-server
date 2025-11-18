@@ -14,6 +14,12 @@ public class HttpResponseFactory {
     return new HttpResponse(HttpResponseStatus.Ok, headers, content);
   }
 
+  public static HttpResponse createInternalServerErrorResponse() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setHeader("Content-Type", "text/html; charset=UTF-8");
+    return new HttpResponse(HttpResponseStatus.InternalServerError, headers, "Internal server error");
+  }
+
   public static HttpResponse createRedirectToLoginResponse() {
     return createRedirectResponse("/login");
   }

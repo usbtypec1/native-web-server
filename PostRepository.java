@@ -1,8 +1,6 @@
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -11,20 +9,12 @@ import java.util.List;
 import java.util.UUID;
 
 public class PostRepository {
-  private final Path storageFile;
-
-  public PostRepository() {
-    storageFile = Paths.get("posts.csv");
-
-    try {
-      if (!Files.exists(storageFile)) {
-        Files.write(
-            storageFile,
-            Collections.singletonList("id,login,title,content,createdAt"),
-            StandardOpenOption.CREATE);
-      }
-    } catch (IOException e) {
-      throw new RuntimeException("Failed to create storage file: " + e.getMessage(), e);
+  public PostRepository() throws IOException {
+    if (!Files.exists(Resources.POSTS_FILE)) {
+      Files.write(
+          Resources.POSTS_FILE,
+          Collections.singletonList("id,login,title,content,createdAt"),
+          StandardOpenOption.CREATE);
     }
   }
 
@@ -36,14 +26,14 @@ public class PostRepository {
         post.getCreatedAt().toString();
 
     Files.write(
-        storageFile,
+        Resources.POSTS_FILE,
         Collections.singletonList(row),
         StandardOpenOption.APPEND);
   }
 
   public Post getPostById(UUID postId) throws PostNotFoundException, IOException {
     List<String> lines;
-    lines = Files.readAllLines(storageFile, StandardCharsets.UTF_8);
+    lines = Files.readAllLines(Resources.POSTS_FILE, StandardCharsets.UTF_8);
 
     for (int i = 1; i < lines.size(); i++) {
       Post post = parsePost(lines.get(i));
@@ -55,13 +45,8 @@ public class PostRepository {
     throw new PostNotFoundException(postId);
   }
 
-  public void deletePost(UUID postId) {
-    List<String> lines;
-    try {
-      lines = Files.readAllLines(storageFile, StandardCharsets.UTF_8);
-    } catch (IOException e) {
-      throw new RuntimeException("Failed to read posts file", e);
-    }
+  public void deletePost(UUID postId) throws IOException {
+    List<String> lines = Files.readAllLines(Resources.POSTS_FILE, StandardCharsets.UTF_8);
 
     boolean removed = false;
     List<String> updated = new ArrayList<>();
@@ -80,11 +65,7 @@ public class PostRepository {
       throw new PostNotFoundException(postId);
     }
 
-    try {
-      Files.write(storageFile, updated, StandardCharsets.UTF_8);
-    } catch (IOException e) {
-      throw new RuntimeException("Failed to delete post", e);
-    }
+    Files.write(Resources.POSTS_FILE, updated, StandardCharsets.UTF_8);
   }
 
   private Post parsePost(String line) {
@@ -97,14 +78,6 @@ public class PostRepository {
     Instant createdAt = Instant.parse(parts[4]);
 
     return new Post(id, username, title, content, createdAt);
-  }
-
-  private String toCsvRow(Post post) {
-    return post.getId() + "," +
-        post.getUsername() + "," +
-        escape(post.getTitle()) + "," +
-        escape(post.getContent()) + "," +
-        post.getCreatedAt().toString();
   }
 
   private String escape(String s) {
@@ -142,7 +115,7 @@ public class PostRepository {
 
   public Post[] getAllPosts() throws IOException {
     List<String> lines;
-    lines = Files.readAllLines(storageFile, StandardCharsets.UTF_8);
+    lines = Files.readAllLines(Resources.POSTS_FILE, StandardCharsets.UTF_8);
 
     List<Post> result = new ArrayList<>();
 
