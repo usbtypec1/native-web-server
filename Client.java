@@ -6,9 +6,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client implements Runnable {
-  private Socket clientSocket;
-  private Thread thread;
-  private Router router;
+  private final Socket clientSocket;
+  private final Thread thread;
+  private final Router router;
 
   public Client(Socket clientSocket) {
     this.clientSocket = clientSocket;

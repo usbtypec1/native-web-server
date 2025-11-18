@@ -1,11 +1,11 @@
 import java.util.Map;
 
 public class HttpRequest {
-  private HttpRequestMethod method;
-  private String route;
-  private HttpHeaders headers;
-  private String body;
-  private Map<String, String> form;
+  private final HttpRequestMethod method;
+  private final String route;
+  private final HttpHeaders headers;
+  private final String body;
+  private final Map<String, String> form;
 
   public HttpRequest(HttpRequestMethod method, String route, HttpHeaders headers, String body, Map<String, String> form) {
     this.method = method;
