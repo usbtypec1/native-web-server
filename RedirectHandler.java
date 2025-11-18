@@ -10,6 +10,6 @@ public class RedirectHandler implements HttpRequestHandler {
   }
 
   public HttpResponse getResponse(HttpRequest request) {
-    return new RedirectResponse(route);
+    return HttpResponseFactory.createRedirectResponse(route);
   }
 }

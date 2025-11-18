@@ -1,16 +1,29 @@
 import java.io.IOException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
 
 public class IndexRequestHandler implements HttpRequestHandler {
+
+  private String getDeletePostForm(Post post, String currentUsername) {
+    if (post.getUsername().equals(currentUsername)) {
+      return """
+          <form action="/posts/delete" method="POST" class="flex items-center justify-center">
+            <input type="hidden" name="postId" value="{{postId}}" />
+            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600">
+              <i class="fa-solid fa-trash"></ i>
+            </button>
+          </form>""".replace("{{postId}}", post.getId().toString());
+    }
+    return "";
+  }
+
   public HttpResponse getResponse(HttpRequest request) {
 
     String session = request.getHeaders().getSession();
     String currentUsername = null;
     try {
-      SessionManager sessionManager = new SessionManager(3600 * 1000);
+      SessionManager sessionManager = new SessionManager();
       currentUsername = sessionManager.getUsername(session);
     } catch (IOException e) {
       e.printStackTrace();
@@ -52,33 +65,18 @@ public class IndexRequestHandler implements HttpRequestHandler {
                 """;
 
     for (Post post : posts) {
-      String username = post.getUsername();
-
       String postHtml = postTemplate
+          .replace("{{deleteForm}}", getDeletePostForm(post, currentUsername))
           .replace("{{postId}}", post.getId().toString())
-          .replace("{{username}}", escape(username))
+          .replace("{{username}}", escape(post.getUsername()))
           .replace("{{title}}", escape(post.getTitle()))
           .replace("{{content}}", escape(post.getContent()))
           .replace("{{createdAt}}", formatter.format(post.getCreatedAt()));
-      if (username.equals(currentUsername)) {
-        String deleteForm = """
-                                    <form action="/posts/delete" method="POST" class="flex items-center justify-center">
-              <input type="hidden" name="postId" value="{{postId}}" />
-              <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600">
-                <i class="fa-solid fa-trash"></i>
-              </button>
-            </form>""";
-        postHtml = postHtml.replace("{{deleteForm}}", deleteForm.replace("{{postId}}", post.getId().toString()));
-      }
       builder.append(postHtml);
     }
 
-    Map<String, String> variables = new HashMap<>();
-    variables.put("posts", builder.toString());
-
-    String body = HtmlRenderer.renderWithVariables("index.html", variables);
-
-    return new HttpResponse(null, null, body);
+    String body = HtmlRenderer.renderWithVariables("index.html", Map.of("posts", builder.toString()));
+    return HttpResponseFactory.createOkResponse(body);
   }
 
   private String escape(String s) {

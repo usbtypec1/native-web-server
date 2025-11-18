@@ -1,24 +1,21 @@
 import java.io.IOException;
 
-public class CreatePostGetRequestHandler extends SimpleHtmlPageHandler {
-  public CreatePostGetRequestHandler() {
-    super("create-post.html");
-  }
+public class CreatePostGetRequestHandler implements HttpRequestHandler {
 
   public HttpResponse getResponse(HttpRequest request) {
     String session = request.getHeaders().getSession();
     if (session == null) {
-      return new RedirectResponse("/login");
+      return HttpResponseFactory.createRedirectToLoginResponse();
     }
     try {
-      SessionManager sessionManager = new SessionManager(3600 * 1000);
+      SessionManager sessionManager = new SessionManager();
       String username = sessionManager.getUsername(session);
       if (username == null) {
-        return new RedirectResponse("/login");
+        return HttpResponseFactory.createRedirectToLoginResponse();
       }
-      return new HtmlTemplateResponse(HtmlRenderer.readTemplateFromFile(getTemplateName()));
+      return HttpResponseFactory.createOkResponse("create-post.html");
     } catch (IOException ioe) {
-      return new HttpResponse(HttpResponseStatus.InternalServerError, null, "Server error");
+      return HttpResponseFactory.createRedirectTo500Response();
     }
   }
 }

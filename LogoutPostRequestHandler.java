@@ -6,7 +6,7 @@ public class LogoutPostRequestHandler implements HttpRequestHandler {
     String session = request.getHeaders().getSession();
 
     try {
-      SessionManager sessionManager = new SessionManager(3600 * 1000);
+      SessionManager sessionManager = new SessionManager();
 
       String username = sessionManager.getUsername(session);
       if (username != null) {

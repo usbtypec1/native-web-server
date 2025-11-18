@@ -23,22 +23,22 @@ public class CreatePostPostRequestHandler implements HttpRequestHandler {
 
     String session = request.getHeaders().getSession();
     if (session == null) {
-      return new RedirectResponse("/login");
+      return HttpResponseFactory.createRedirectToLoginResponse();
     }
     try {
-      SessionManager sessionManager = new SessionManager(3600 * 1000);
+      SessionManager sessionManager = new SessionManager();
       String username = sessionManager.getUsername(session);
       if (username == null) {
-        return new RedirectResponse("/login");
+        return HttpResponseFactory.createRedirectToLoginResponse();
       }
 
       PostRepository postRepository = new PostRepository();
       Post post = new Post(UUID.randomUUID(), username, title, content, Instant.now());
       postRepository.createPost(post);
 
-      return new RedirectResponse("/");
+      return HttpResponseFactory.createRedirectResponse("/");
     } catch (IOException ioe) {
-      return new HttpResponse(HttpResponseStatus.InternalServerError, null, "Server error");
+      return HttpResponseFactory.createRedirectTo500Response();
     }
   }
 }

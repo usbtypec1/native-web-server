@@ -2,18 +2,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 public class UserRepository {
-  private final Path storageDir;
 
   public UserRepository() {
-    storageDir = Paths.get("users");
     try {
-      if (!Files.exists(storageDir)) {
-        Files.createDirectories(storageDir);
+      if (!Files.exists(Resources.USERS_DIR)) {
+        Files.createDirectories(Resources.USERS_DIR);
       }
     } catch (IOException e) {
       throw new RuntimeException("Failed to create storage directory", e);
@@ -38,10 +34,8 @@ public class UserRepository {
     try {
       List<String> lines = Files.readAllLines(userFile, StandardCharsets.UTF_8);
       try {
-        UUID id = UUID.fromString(lines.get(0));
-        String passwordHash = lines.get(1);
-        String sessionId = lines.get(2);
-        return new User(id, username, passwordHash, sessionId);
+        String passwordHash = lines.get(0);
+        return new User(username, passwordHash);
       } catch (IndexOutOfBoundsException e) {
         throw new StorageException("Invalid user file format.");
       }
@@ -59,7 +53,7 @@ public class UserRepository {
     if (username == null) {
       throw new IllegalArgumentException("Username is null");
     }
-    return storageDir.resolve(username + ".txt");
+    return Resources.USERS_DIR.resolve(username + ".txt");
   }
 
   private Path resolveUserFilePath(String username) {
@@ -71,9 +65,7 @@ public class UserRepository {
   }
 
   private void writeUserToFile(Path userFile, User user) {
-    String content = user.getId().toString() + "\n" +
-        user.getPasswordHash() + "\n" +
-        user.getSessionId() + "\n";
+    String content = user.getPasswordHash() + "\n";
     try {
       Files.write(userFile, content.getBytes(StandardCharsets.UTF_8));
     } catch (IOException e) {

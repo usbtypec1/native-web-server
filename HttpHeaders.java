@@ -95,6 +95,24 @@ public class HttpHeaders {
   }
 
   /**
+   * Sets a session cookie in the headers.
+   *
+   * <p>
+   * This method creates a "Set-Cookie" header for a session cookie with the
+   * specified session ID and maximum age.
+   * </p>
+   *
+   * @param session       the session ID to set; ignored if {@code null}
+   * @param maxAgeSeconds the maximum age of the cookie in seconds
+   */
+  public void setSession(String session, int maxAgeSeconds) {
+    if (session == null)
+      return;
+    String cookie = String.format("session=%s; Path=/; HttpOnly; Max-Age=%s", session, maxAgeSeconds);
+    setHeader("Set-Cookie", cookie);
+  }
+
+  /**
    * Converts all stored headers to an array of raw HTTP header lines.
    * <p>
    * Each element of the returned array has the format:

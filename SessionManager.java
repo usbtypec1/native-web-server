@@ -9,11 +9,10 @@ import java.util.UUID;
 
 public class SessionManager {
   private final File file;
-  private final long sessionTimeoutMillis;
+  public static final int SESSION_TIMEOUT_SECONDS = 60 * 60;
 
-  public SessionManager(long sessionTimeoutMillis) throws IOException {
-    this.file = new File("sessions.txt");
-    this.sessionTimeoutMillis = sessionTimeoutMillis;
+  public SessionManager() throws IOException {
+    file = Resources.SESSIONS_FILE.toFile();
 
     if (!file.exists()) {
       file.createNewFile();
@@ -48,7 +47,7 @@ public class SessionManager {
       String username = parts[1];
       long issue = Long.parseLong(parts[2]);
 
-      boolean expired = (now - issue) > sessionTimeoutMillis;
+      boolean expired = (now - issue) > SESSION_TIMEOUT_SECONDS * 1000;
 
       if (!expired) {
         newContent.add(line);
@@ -92,7 +91,7 @@ public class SessionManager {
         continue;
       }
       long issuedAt = Long.parseLong(parts[2]);
-      if (now - issuedAt <= sessionTimeoutMillis) {
+      if (now - issuedAt <= SESSION_TIMEOUT_SECONDS * 1000) {
         activeSessions.add(line);
       }
     }

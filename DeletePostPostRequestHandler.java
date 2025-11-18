@@ -7,10 +7,11 @@ public class DeletePostPostRequestHandler implements HttpRequestHandler {
     String session = request.getHeaders().getSession();
     String currentUsername = null;
     try {
-      SessionManager sessionManager = new SessionManager(3600 * 1000);
+      SessionManager sessionManager = new SessionManager();
       currentUsername = sessionManager.getUsername(session);
     } catch (IOException e) {
       e.printStackTrace();
+      return HttpResponseFactory.createRedirectTo500Response();
     }
 
     Map<String, String> form = request.getForm();
@@ -20,7 +21,7 @@ public class DeletePostPostRequestHandler implements HttpRequestHandler {
     try {
       postId = UUID.fromString(rawPostId);
     } catch (IllegalArgumentException e) {
-      return new RedirectResponse("/404");
+      return HttpResponseFactory.createRedirectTo404Response();
     }
 
     PostRepository postRepository = new PostRepository();
@@ -31,10 +32,9 @@ public class DeletePostPostRequestHandler implements HttpRequestHandler {
       }
     } catch (StorageException | PostNotFoundException e) {
       e.printStackTrace();
-      return new RedirectResponse("/500");
+      return HttpResponseFactory.createRedirectTo500Response();
     }
 
-    return new RedirectResponse("/");
+    return HttpResponseFactory.createRedirectResponse("/");
   }
-
 }

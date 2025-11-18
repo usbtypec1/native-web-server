@@ -2,11 +2,11 @@ import java.time.Instant;
 import java.util.UUID;
 
 public class Post {
-  private UUID id;
-  private String username;
-  private String title;
-  private String content;
-  private Instant createdAt;
+  private final UUID id;
+  private final String username;
+  private final String title;
+  private final String content;
+  private final Instant createdAt;
 
   public Post(UUID id, String username, String title, String content, Instant createdAt) {
     this.id = id;

@@ -13,4 +13,20 @@ public class HttpResponseFactory {
     headers.setHeader("Content-Type", "text/html; charset=UTF-8");
     return new HttpResponse(HttpResponseStatus.Ok, headers, content);
   }
+
+  public static HttpResponse createRedirectToLoginResponse() {
+    return createRedirectResponse("/login");
+  }
+
+  public static HttpResponse createRedirectTo404Response() {
+    return createRedirectResponse("/404");
+  }
+
+  public static HttpResponse createRedirectTo500Response() {
+    return createRedirectResponse("/500");
+  }
+
+  public static HttpResponse createBadRequestResponse(String body) {
+    return new HttpResponse(HttpResponseStatus.BadRequest, null, body);
+  }
 }

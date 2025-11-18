@@ -3,25 +3,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginPostRequestHandler implements HttpRequestHandler {
-  public HttpResponse getResponse(HttpRequest request) {
+  private String getErrorMessage(String message) {
+    return String.format(
+        """
+              <div class="mb-4" id="error-box">
+              <span
+                class="block w-full bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2 animate-fade-in">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                %s
+              </span>
+            </div>""",
+        message);
+  }
 
+  public HttpResponse getResponse(HttpRequest request) {
     Map<String, String> form = request.getForm();
     String username = form.get("username");
     String password = form.get("password");
 
     if (username == null || password == null) {
-      String errorMessage = """
-                    <div class="mb-4" id="error-box">
-            <span
-              class="block w-full bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2 animate-fade-in">
-              <i class="fa-solid fa-circle-exclamation"></i>
-              Username or password is not provided
-            </span>
-          </div>""";
+      String errorMessage = getErrorMessage("Username or password is not provided");
       Map<String, String> variables = new HashMap<>();
       variables.put("errorMessage", errorMessage);
       String body = HtmlRenderer.renderWithVariables("login.html", variables);
-      return new HttpResponse(HttpResponseStatus.BadRequest, null, body);
+      return HttpResponseFactory.createBadRequestResponse(body);
 
     }
 
@@ -31,48 +36,33 @@ public class LoginPostRequestHandler implements HttpRequestHandler {
     try {
       user = userRepository.getUserByUsername(username);
     } catch (UserNotFoundException e) {
-      String errorMessage = """
-                    <div class="mb-4" id="error-box">
-            <span
-              class="block w-full bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2 animate-fade-in">
-              <i class="fa-solid fa-circle-exclamation"></i>
-              User not found
-            </span>
-          </div>""";
+      String errorMessage = getErrorMessage("User not found");
       Map<String, String> variables = new HashMap<>();
       variables.put("errorMessage", errorMessage);
       variables.put("username", username);
       String body = HtmlRenderer.renderWithVariables("login.html", variables);
-      return new HttpResponse(HttpResponseStatus.BadRequest, null, body);
+      return HttpResponseFactory.createBadRequestResponse(body);
     }
 
     boolean isPasswordCorrect = PasswordHasher.verify(password, user.getPasswordHash());
 
     if (!isPasswordCorrect) {
-      String errorMessage = """
-                    <div class="mb-4" id="error-box">
-            <span
-              class="block w-full bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2 animate-fade-in">
-              <i class="fa-solid fa-circle-exclamation"></i>
-              Invalid password
-            </span>
-          </div>""";
+      String errorMessage = getErrorMessage("Invalid password");
       Map<String, String> variables = new HashMap<>();
       variables.put("errorMessage", errorMessage);
       variables.put("username", username);
       String body = HtmlRenderer.renderWithVariables("login.html", variables);
-      return new HttpResponse(HttpResponseStatus.BadRequest, null, body);
+      return HttpResponseFactory.createBadRequestResponse(body);
     }
 
     try {
-      SessionManager sessionManager = new SessionManager(3600 * 1000);
-      HttpResponse response = new RedirectResponse("/");
-      String cookie = String.format("session=%s; Path=/; HttpOnly; Max-Age=3600",
-          sessionManager.createSession(username));
-      response.getHeaders().setHeader("Set-Cookie", cookie);
+      SessionManager sessionManager = new SessionManager();
+      HttpResponse response = HttpResponseFactory.createRedirectResponse("/");
+      String session = sessionManager.createSession(username);
+      response.getHeaders().setSession(session, SessionManager.SESSION_TIMEOUT_SECONDS);
       return response;
     } catch (IOException ioe) {
-      return new HttpResponse(HttpResponseStatus.InternalServerError, null, "Server error");
+      return HttpResponseFactory.createRedirectTo500Response();
     }
   }
 }
