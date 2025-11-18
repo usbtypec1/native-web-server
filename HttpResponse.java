@@ -7,7 +7,7 @@ public class HttpResponse {
     this.status = status;
     this.headers = headers;
     if (body != null) {
-      this.body = body.replaceAll("\\{[^}]*\\}", "").getBytes();
+      this.body = body.replaceAll("\\{\\{[^}]*\\}\\}", "").getBytes();
     }
 
     if (status == null) {
