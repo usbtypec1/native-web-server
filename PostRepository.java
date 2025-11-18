@@ -123,6 +123,16 @@ public class PostRepository {
       result.add(parsePost(lines.get(i)));
     }
 
-    return result.toArray(new Post[0]);
+    Post[] posts = result.toArray(new Post[0]);
+    reverseArray(posts);
+    return posts;
+  }
+
+  private static void reverseArray(Post[] posts) {
+    for (int i = 0; i < posts.length / 2; i++) {
+      Post temp = posts[i];
+      posts[i] = posts[posts.length - 1 - i];
+      posts[posts.length - 1 - i] = temp;
+    }
   }
 }
