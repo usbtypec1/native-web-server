@@ -6,16 +6,16 @@ import java.util.Map;
 public class IndexRequestHandler implements HttpRequestHandler {
 
   private String getDeletePostForm(Post post, String currentUsername) {
-    if (post.getUsername().equals(currentUsername)) {
-      return """
-          <form action="/posts/delete" method="POST" class="flex items-center justify-center">
-            <input type="hidden" name="postId" value="{{postId}}" />
-            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600">
-              <i class="fa-solid fa-trash"></ i>
-            </button>
-          </form>""".replace("{{postId}}", post.getId().toString());
+    if (!post.getUsername().equals(currentUsername)) {
+      return "";
     }
-    return "";
+    return """
+        <form action="/posts/delete" method="POST" class="flex items-center justify-center">
+          <input type="hidden" name="postId" value="{{postId}}" />
+          <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600">
+            Delete
+          </button>
+        </form>""";
   }
 
   public HttpResponse getResponse(HttpRequest request) {
@@ -70,10 +70,9 @@ public class IndexRequestHandler implements HttpRequestHandler {
             .replace("{{createdAt}}", formatter.format(post.getCreatedAt()));
         builder.append(postHtml);
       }
-      String body = HtmlRenderer.renderWithVariables("index.html", Map.of("posts", builder.toString()));
-      return HttpResponseFactory.createOkResponse(body);
+      String html = HtmlRenderer.renderWithVariables("index.html", Map.of("posts", builder.toString()));
+      return HttpResponseFactory.createOkResponse(html);
     } catch (IOException e) {
-      e.printStackTrace();
       System.err.println(e);
       return HttpResponseFactory.createRedirectTo500Response();
     }
