@@ -17,7 +17,6 @@ public class IndexRequestHandler implements HttpRequestHandler {
     }
 
     PostRepository postRepository = new PostRepository();
-    UserRepository userRepository = new UserRepository();
 
     Post[] posts = postRepository.getAllPosts();
 
@@ -28,8 +27,6 @@ public class IndexRequestHandler implements HttpRequestHandler {
     }
 
     StringBuilder builder = new StringBuilder();
-
-    Map<String, User> users = new HashMap<>();
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy").withZone(ZoneId.of("Asia/Bishkek"));
 
@@ -55,14 +52,7 @@ public class IndexRequestHandler implements HttpRequestHandler {
                 """;
 
     for (Post post : posts) {
-      User user = users.get(post.getUsername());
-      if (user == null) {
-        try {
-          user = userRepository.getUserByUsername(post.getUsername());
-        } catch (UserNotFoundException e) {
-        }
-      }
-      String username = user != null ? user.getUsername() : "Anonymous";
+      String username = post.getUsername();
 
       String postHtml = postTemplate
           .replace("{postId}", post.getId().toString())
