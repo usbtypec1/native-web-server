@@ -27,5 +27,6 @@ users/*
 
 .DS_Store
 
-sessions.txt
-posts.csv
+resources/users/*.txt
+resources/sessions.txt
+resources/posts.csv

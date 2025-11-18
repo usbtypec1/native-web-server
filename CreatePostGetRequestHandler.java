@@ -13,7 +13,7 @@ public class CreatePostGetRequestHandler implements HttpRequestHandler {
       if (username == null) {
         return HttpResponseFactory.createRedirectToLoginResponse();
       }
-      return HttpResponseFactory.createOkResponse("create-post.html");
+      return HttpResponseFactory.createOkResponse(HtmlRenderer.readTemplateFromFile("create-post.html"));
     } catch (IOException ioe) {
       return HttpResponseFactory.createRedirectTo500Response();
     }

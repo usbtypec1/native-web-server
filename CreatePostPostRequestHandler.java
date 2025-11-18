@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
@@ -34,7 +36,8 @@ public class CreatePostPostRequestHandler implements HttpRequestHandler {
       }
 
       PostRepository postRepository = new PostRepository();
-      Post post = new Post(UUID.randomUUID(), username, title, content, Instant.now());
+      Post post = new Post(UUID.randomUUID(), username, URLDecoder.decode(title, StandardCharsets.UTF_8),
+          URLDecoder.decode(content, StandardCharsets.UTF_8), Instant.now());
       postRepository.createPost(post);
 
       return HttpResponseFactory.createRedirectResponse("/");
