@@ -22,48 +22,48 @@ public class RegisterPostRequestHandler implements HttpRequestHandler {
     String password = form.get("password");
     String confirmPassword = form.get("password2");
 
-    if (username == null || password == null || confirmPassword == null) {
-      String errorMessage = getErrorMessage("All fields are required");
-      Map<String, String> variables = new HashMap<>();
-      variables.put("errorMessage", errorMessage);
-      String body = HtmlRenderer.renderWithVariables("register.html", variables);
-      return HttpResponseFactory.createBadRequestResponse(body);
-    }
-
-    if (!password.equals(confirmPassword)) {
-      String errorMessage = getErrorMessage("Passwords do not match");
-      Map<String, String> variables = Map.of("errorMessage", errorMessage, "username", username);
-      String body = HtmlRenderer.renderWithVariables("register.html", variables);
-      return HttpResponseFactory.createBadRequestResponse(body);
-    }
-
-    UserRepository userRepository = new UserRepository();
     try {
+      if (username == null || password == null || confirmPassword == null) {
+        String errorMessage = getErrorMessage("All fields are required");
+        Map<String, String> variables = new HashMap<>();
+        variables.put("errorMessage", errorMessage);
+        String body = HtmlRenderer.renderWithVariables("register.html", variables);
+        return HttpResponseFactory.createBadRequestResponse(body);
+      }
+
+      if (!password.equals(confirmPassword)) {
+        String errorMessage = getErrorMessage("Passwords do not match");
+        Map<String, String> variables = Map.of("errorMessage", errorMessage, "username", username);
+        String body = HtmlRenderer.renderWithVariables("register.html", variables);
+        return HttpResponseFactory.createBadRequestResponse(body);
+      }
+
+      UserRepository userRepository = new UserRepository();
       if (userRepository.existsByUsername(username)) {
         String errorMessage = getErrorMessage("Username already taken");
         Map<String, String> variables = Map.of("errorMessage", errorMessage, "username", username);
         String body = HtmlRenderer.renderWithVariables("register.html", variables);
         return HttpResponseFactory.createBadRequestResponse(body);
       }
-    } catch (Exception e) {
-      return HttpResponseFactory.createRedirectTo500Response();
-    }
 
-    // Hash the password securely
-    String hashedPassword = PasswordHasher.hash(password);
+      String hashedPassword = PasswordHasher.hash(password);
 
-    try {
       SessionManager sessionManager = new SessionManager();
       String session = sessionManager.createSession(username);
       User newUser = new User(username, hashedPassword);
-      userRepository.createUser(newUser);
+      try {
+        userRepository.createUser(newUser);
+      } catch (UserAlreadyExistsException e) {
+        String errorMessage = getErrorMessage(e.getMessage());
+        Map<String, String> variables = Map.of("errorMessage", errorMessage, "username", username);
+        String body = HtmlRenderer.renderWithVariables("register.html", variables);
+        return HttpResponseFactory.createBadRequestResponse(body);
+      }
 
       HttpResponse response = HttpResponseFactory.createRedirectResponse("/");
-      String cookie = String.format("session=%s; Path=/; HttpOnly; Max-Age=%s", session,
-          SessionManager.SESSION_TIMEOUT_SECONDS);
-      response.getHeaders().setHeader("Set-Cookie", cookie);
+      response.getHeaders().setSession(session, SessionManager.SESSION_TIMEOUT_SECONDS);
       return response;
-    } catch (IOException ioe) {
+    } catch (IOException e) {
       return HttpResponseFactory.createRedirectTo500Response();
     }
   }

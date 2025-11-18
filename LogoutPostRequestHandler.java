@@ -15,7 +15,7 @@ public class LogoutPostRequestHandler implements HttpRequestHandler {
       }
       return HttpResponseFactory.createRedirectResponse("/");
     } catch (IOException e) {
-      return HttpResponseFactory.createRedirectResponse("/500");
+      return HttpResponseFactory.createRedirectTo500Response();
     }
   }
 }

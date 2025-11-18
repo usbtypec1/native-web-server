@@ -10,22 +10,23 @@ public class CreatePostPostRequestHandler implements HttpRequestHandler {
     String title = form.get("title");
     String content = form.get("content");
 
-    if (title == null || title.isBlank() || content == null || content.isBlank()) {
-      String errorMessage = """
-          <div class="w-full max-w-xl mb-4">
-            <span class="block bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
-              <i class="fa-solid fa-circle-exclamation"></i> Title and content cannot be empty.
-            </span>
-          </div>""";
-      String body = HtmlRenderer.renderWithVariables("create-post.html", Map.of("errorMessage", errorMessage));
-      return new HttpResponse(HttpResponseStatus.BadRequest, null, body);
-    }
-
-    String session = request.getHeaders().getSession();
-    if (session == null) {
-      return HttpResponseFactory.createRedirectToLoginResponse();
-    }
     try {
+      if (title == null || title.isBlank() || content == null || content.isBlank()) {
+        String errorMessage = """
+            <div class="w-full max-w-xl mb-4">
+              <span class="block bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation"></i> Title and content cannot be empty.
+              </span>
+            </div>""";
+        String body = HtmlRenderer.renderWithVariables("create-post.html", Map.of("errorMessage", errorMessage));
+        return new HttpResponse(HttpResponseStatus.BadRequest, null, body);
+      }
+
+      String session = request.getHeaders().getSession();
+      if (session == null) {
+        return HttpResponseFactory.createRedirectToLoginResponse();
+      }
+
       SessionManager sessionManager = new SessionManager();
       String username = sessionManager.getUsername(session);
       if (username == null) {

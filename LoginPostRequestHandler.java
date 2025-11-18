@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 public class LoginPostRequestHandler implements HttpRequestHandler {
@@ -21,47 +20,39 @@ public class LoginPostRequestHandler implements HttpRequestHandler {
     String username = form.get("username");
     String password = form.get("password");
 
-    if (username == null || password == null) {
-      String errorMessage = getErrorMessage("Username or password is not provided");
-      Map<String, String> variables = new HashMap<>();
-      variables.put("errorMessage", errorMessage);
-      String body = HtmlRenderer.renderWithVariables("login.html", variables);
-      return HttpResponseFactory.createBadRequestResponse(body);
-
-    }
-
-    UserRepository userRepository = new UserRepository();
-
-    User user = null;
     try {
-      user = userRepository.getUserByUsername(username);
-    } catch (UserNotFoundException e) {
-      String errorMessage = getErrorMessage("User not found");
-      Map<String, String> variables = new HashMap<>();
-      variables.put("errorMessage", errorMessage);
-      variables.put("username", username);
-      String body = HtmlRenderer.renderWithVariables("login.html", variables);
-      return HttpResponseFactory.createBadRequestResponse(body);
-    }
+      if (username == null || password == null) {
+        String errorMessage = getErrorMessage("Username or password is not provided");
+        String body = HtmlRenderer.renderWithVariables("login.html", Map.of("errorMessage", errorMessage));
+        return HttpResponseFactory.createBadRequestResponse(body);
+      }
 
-    boolean isPasswordCorrect = PasswordHasher.verify(password, user.getPasswordHash());
+      UserRepository userRepository = new UserRepository();
+      User user = null;
+      try {
+        user = userRepository.getUserByUsername(username);
+      } catch (UserNotFoundException e) {
+        String errorMessage = getErrorMessage("User not found");
+        String body = HtmlRenderer.renderWithVariables("login.html",
+            Map.of("errorMessage", errorMessage, "username", username));
+        return HttpResponseFactory.createBadRequestResponse(body);
+      }
 
-    if (!isPasswordCorrect) {
-      String errorMessage = getErrorMessage("Invalid password");
-      Map<String, String> variables = new HashMap<>();
-      variables.put("errorMessage", errorMessage);
-      variables.put("username", username);
-      String body = HtmlRenderer.renderWithVariables("login.html", variables);
-      return HttpResponseFactory.createBadRequestResponse(body);
-    }
+      boolean isPasswordCorrect = PasswordHasher.verify(password, user.getPasswordHash());
 
-    try {
+      if (!isPasswordCorrect) {
+        String errorMessage = getErrorMessage("Invalid password");
+        String body = HtmlRenderer.renderWithVariables("login.html",
+            Map.of("errorMessage", errorMessage, "username", username));
+        return HttpResponseFactory.createBadRequestResponse(body);
+      }
+
       SessionManager sessionManager = new SessionManager();
       HttpResponse response = HttpResponseFactory.createRedirectResponse("/");
       String session = sessionManager.createSession(username);
       response.getHeaders().setSession(session, SessionManager.SESSION_TIMEOUT_SECONDS);
       return response;
-    } catch (IOException ioe) {
+    } catch (IOException e) {
       return HttpResponseFactory.createRedirectTo500Response();
     }
   }

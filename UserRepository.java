@@ -6,47 +6,34 @@ import java.util.List;
 
 public class UserRepository {
 
-  public UserRepository() {
-    try {
-      if (!Files.exists(Resources.USERS_DIR)) {
-        Files.createDirectories(Resources.USERS_DIR);
-      }
-    } catch (IOException e) {
-      throw new RuntimeException("Failed to create storage directory", e);
+  public UserRepository() throws IOException {
+    if (!Files.exists(Resources.USERS_DIR)) {
+      Files.createDirectories(Resources.USERS_DIR);
     }
   }
 
-  public void createUser(User user) {
+  public void createUser(User user) throws UserAlreadyExistsException, IOException {
     Path userFile = buildUserFilePath(user.getUsername());
     if (Files.exists(userFile)) {
-      throw new IllegalStateException("User already exists: " + user.getUsername());
+      throw new UserAlreadyExistsException(user.getUsername());
     }
     writeUserToFile(userFile, user);
   }
 
-  public boolean existsByUsername(String username) throws StorageException {
+  public boolean existsByUsername(String username) throws IOException {
     Path userFile = buildUserFilePath(username);
     return Files.exists(userFile);
   }
 
-  public User getUserByUsername(String username) throws UserNotFoundException, StorageException {
+  public User getUserByUsername(String username) throws UserNotFoundException, IOException {
     Path userFile = resolveUserFilePath(username);
+    List<String> lines = Files.readAllLines(userFile, StandardCharsets.UTF_8);
     try {
-      List<String> lines = Files.readAllLines(userFile, StandardCharsets.UTF_8);
-      try {
-        String passwordHash = lines.get(0);
-        return new User(username, passwordHash);
-      } catch (IndexOutOfBoundsException e) {
-        throw new StorageException("Invalid user file format.");
-      }
-    } catch (IOException e) {
-      throw new StorageException("Could not read user from file: " + userFile.toString());
+      String passwordHash = lines.get(0);
+      return new User(username, passwordHash);
+    } catch (IndexOutOfBoundsException e) {
+      return null;
     }
-  }
-
-  public void updateUser(User user) {
-    Path userFile = resolveUserFilePath(user.getUsername());
-    writeUserToFile(userFile, user);
   }
 
   private Path buildUserFilePath(String username) {
@@ -64,12 +51,8 @@ public class UserRepository {
     return userFile;
   }
 
-  private void writeUserToFile(Path userFile, User user) {
+  private void writeUserToFile(Path userFile, User user) throws IOException {
     String content = user.getPasswordHash() + "\n";
-    try {
-      Files.write(userFile, content.getBytes(StandardCharsets.UTF_8));
-    } catch (IOException e) {
-      throw new RuntimeException("Failed to write user file: " + userFile, e);
-    }
+    Files.write(userFile, content.getBytes(StandardCharsets.UTF_8));
   }
 }
