@@ -16,7 +16,9 @@ public class Router {
     getRoutes.put("/register", new SimpleHtmlPageHandler("register.html"));
     getRoutes.put("/about", new SimpleHtmlPageHandler("about.html"));
     getRoutes.put("/posts/create", new CreatePostGetRequestHandler());
+    getRoutes.put("/logout", new LogoutGetRequestHandler());
 
+    postRoutes.put("/logout", new LogoutPostRequestHandler());
     postRoutes.put("/register", new RegisterPostRequestHandler());
     postRoutes.put("/login", new LoginPostRequestHandler());
     postRoutes.put("/posts/create", new CreatePostPostRequestHandler());

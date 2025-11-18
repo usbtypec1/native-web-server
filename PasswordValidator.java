@@ -23,12 +23,8 @@ public class PasswordValidator {
             helper.append("- Password should contain at least one digit\n");
         }
 
-        if (!password.matches(".*[!@#$%^&*()_+\\-=[\\]{};':\"\\\\|,.<>/?].*")) {
-            helper.append("- Password should contain at least one special character (!@#$%^&*...)\n");
-        }
-
         if (helper.length() == 0) {
-            return "Password is strong";
+            return "Password is empty";
         }
 
         return helper.toString().trim();
