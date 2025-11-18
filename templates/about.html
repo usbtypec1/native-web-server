@@ -4,26 +4,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About</title>
+  <title>About — Postland</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body class="bg-gray-50 text-gray-800">
+
+  <!-- HEADER -->
   <header class="p-4 shadow-md bg-white flex justify-between items-center">
-    <h1 class="text-xl font-bold">Brand</h1>
+    <h1 class="text-xl font-bold"><a href="/"><i class="fa-solid fa-comment"></i> Postland</a></h1>
     <nav class="space-x-4 text-sm">
-      <a href="/" class="hover:text-blue-500">Home</a>
+      <a href="/about" class="hover:text-blue-500 text-blue-600 font-semibold">About</a>
       <a href="/login" class="hover:text-blue-500">Login</a>
       <a href="/register" class="hover:text-blue-500">Register</a>
     </nav>
   </header>
 
-  <section class="px-6 mt-10 max-w-2xl mx-auto">
-    <h2 class="text-3xl font-bold mb-4">About Us</h2>
-    <p class="text-gray-600 mb-6 leading-relaxed">We build simple, elegant, and user-friendly interfaces. Our mission is
-      to create a seamless experience for users around the world with modern and responsive design.</p>
-  </section>
+  <!-- MAIN -->
+  <main class="flex flex-col items-center text-center px-6 mt-12 mb-12">
+    <h2 class="text-4xl font-bold mb-4 flex items-center gap-3">
+      <i class="fa-solid fa-circle-info text-blue-500"></i>
+      About Postland
+    </h2>
+
+    <p class="text-gray-700 text-lg max-w-2xl leading-relaxed mb-6">
+      Postland is a simple and elegant platform where people can share thoughts, ideas, and stories.
+      Built with a minimalistic design and a focus on clarity, it allows users to create posts,
+      explore content from others, and engage in a clean and distraction-free environment.
+    </p>
+
+    <div class="max-w-2xl space-y-6 text-left">
+
+      <div class="flex items-start gap-4">
+        <i class="fa-solid fa-bullseye text-blue-500 text-2xl mt-1"></i>
+        <div>
+          <h3 class="text-xl font-semibold mb-1">Our Mission</h3>
+          <p class="text-gray-600">
+            To provide a fast, lightweight, and enjoyable space where anyone can express themselves through posts.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-4">
+        <i class="fa-solid fa-code text-blue-500 text-2xl mt-1"></i>
+        <div>
+          <h3 class="text-xl font-semibold mb-1">How It's Built</h3>
+          <p class="text-gray-600">
+            Postland is powered by a custom-built Java native web server, TailwindCSS for styling,
+            and clean templates designed for readability and performance.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-4">
+        <i class="fa-solid fa-users text-blue-500 text-2xl mt-1"></i>
+        <div>
+          <h3 class="text-xl font-semibold mb-1">Who It's For</h3>
+          <p class="text-gray-600">
+            Anyone who wants to write posts without the noise of crowded platforms — developers,
+            bloggers, students, and curious thinkers.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <a href="/" class="mt-10 px-6 py-3 bg-blue-500 text-white rounded-xl shadow hover:bg-blue-600">
+      <i class="fa-solid fa-arrow-left"></i> Back to Home
+    </a>
+  </main>
+
 </body>
 
 </html>

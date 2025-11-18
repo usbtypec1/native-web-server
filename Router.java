@@ -10,9 +10,11 @@ public class Router {
     postRoutes = new HashMap<>();
 
     getRoutes.put("/", new IndexRequestHandler());
-    getRoutes.put("/404", new SimpleHtmlPageHandler("not-found.html"));
+    getRoutes.put("/404", new SimpleHtmlPageHandler("404.html"));
+    getRoutes.put("/500", new SimpleHtmlPageHandler("500.html"));
     getRoutes.put("/login", new SimpleHtmlPageHandler("login.html"));
     getRoutes.put("/register", new SimpleHtmlPageHandler("register.html"));
+    getRoutes.put("/about", new SimpleHtmlPageHandler("about.html"));
     getRoutes.put("/posts/create", new CreatePostGetRequestHandler());
 
     postRoutes.put("/register", new RegisterPostRequestHandler());
