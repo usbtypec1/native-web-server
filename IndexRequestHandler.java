@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class IndexRequestHandler implements HttpRequestHandler {
@@ -17,7 +18,11 @@ public class IndexRequestHandler implements HttpRequestHandler {
         postsTemplateBuilder.appendPost(post, currentUsername);
       }
 
-      String html = HtmlRenderer.renderWithVariables("index.html", Map.of("posts", postsTemplateBuilder.toString()));
+      Map<String, String> variables = new HashMap<>();
+      variables.put("posts", postsTemplateBuilder.toString());
+      variables.put("currentUsername", currentUsername);
+
+      String html = HtmlRenderer.renderWithVariables("index.html", variables);
       return HttpResponseFactory.createOkResponse(html);
     } catch (IOException e) {
       return HttpResponseFactory.createRedirectTo500Response();

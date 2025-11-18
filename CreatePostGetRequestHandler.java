@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreatePostGetRequestHandler implements HttpRequestHandler {
 
@@ -8,10 +10,14 @@ public class CreatePostGetRequestHandler implements HttpRequestHandler {
     }
     try {
       SessionManager sessionManager = new SessionManager();
-      if (!sessionManager.isAuthenticated(request.getHeaders().getSession())) {
+      String username = sessionManager.getUsername(request.getHeaders().getSession());
+      if (username == null) {
         return HttpResponseFactory.createRedirectToLoginResponse();
       }
-      return HttpResponseFactory.createOkResponse(HtmlRenderer.readTemplateFromFile("create-post.html"));
+      Map<String, String> variables = new HashMap<>();
+      variables.put("currentUsername", username);
+      String html = HtmlRenderer.renderWithVariables("create-post.html", variables);
+      return HttpResponseFactory.createOkResponse(html);
     } catch (IOException ioe) {
       return HttpResponseFactory.createRedirectTo500Response();
     }

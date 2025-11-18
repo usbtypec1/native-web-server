@@ -11,26 +11,15 @@
 
 <body class="bg-gray-50 text-gray-800">
 
-  <!-- HEADER -->
-  <header class="p-4 shadow-md bg-white flex justify-between items-center">
-    <h1 class="text-xl font-bold"><a href="/"><i class="fa-solid fa-comment"></i> Postland</a></h1>
-    <nav class="space-x-4 text-sm">
-      <a href="/about" class="hover:text-blue-500">About</a>
-      <a href="/login" class="hover:text-blue-500">Login</a>
-      <a href="/register" class="hover:text-blue-500">Register</a>
-    </nav>
-  </header>
+  {{header}}
 
-  <!-- MAIN -->
   <main class="flex flex-col items-center px-6 mt-12 mb-12 w-full">
     <h2 class="text-4xl font-bold mb-6"><i class="fa-solid fa-pen-to-square"></i> Create Post</h2>
 
     {{errorMessage}}
 
-    <!-- FORM -->
     <form class="bg-white shadow rounded-xl p-8 w-full max-w-xl space-y-5" method="post">
 
-      <!-- Title -->
       <div>
         <label class="block text-sm font-medium mb-1">Title</label>
         <input type="text" name="title"
@@ -38,7 +27,6 @@
           placeholder="Enter post title" required />
       </div>
 
-      <!-- Content -->
       <div>
         <label class="block text-sm font-medium mb-1">Content</label>
         <textarea name="content" rows="6"
@@ -46,7 +34,6 @@
           placeholder="Write your post here..." required></textarea>
       </div>
 
-      <!-- Submit Button -->
       <button type="submit"
         class="w-full py-3 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600">
         <i class="fa-solid fa-paper-plane"></i> Publish Post

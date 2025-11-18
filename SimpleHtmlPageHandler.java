@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple HTTP request handler that serves a static HTML page.
@@ -17,7 +19,7 @@ import java.io.IOException;
  * HttpResponse response = handler.getResponse(request);
  * }</pre>
  */
-public class SimpleHtmlPageHandler implements HttpRequestHandler {
+public final class SimpleHtmlPageHandler implements HttpRequestHandler {
   private final String templateName;
 
   public SimpleHtmlPageHandler(String templateName) {
@@ -30,9 +32,15 @@ public class SimpleHtmlPageHandler implements HttpRequestHandler {
 
   public HttpResponse getResponse(HttpRequest request) {
     try {
-      return HttpResponseFactory.createOkResponse(
-          HtmlRenderer.readTemplateFromFile(templateName));
+      SessionManager sessionManager = new SessionManager();
+      String username = sessionManager.getUsername(request.getHeaders().getSession());
+
+      Map<String, String> variables = new HashMap<>();
+      variables.put("currentUsername", username);
+      String html = HtmlRenderer.renderWithVariables(templateName, variables);
+      return HttpResponseFactory.createOkResponse(html);
     } catch (IOException e) {
+      // Escape infinite redirect loop for /500 route
       if (!request.getRoute().equals("/500")) {
         return HttpResponseFactory.createRedirectTo500Response();
       }

@@ -13,7 +13,15 @@ public class HtmlRenderer {
     if (variables == null) {
       return result;
     }
+
+    String currentUsername = variables.remove("currentUsername");
+    boolean isLoggedIn = currentUsername != null;
+    result = result.replace("{{header}}", HeaderTemplate.getTemplate(isLoggedIn));
+    
     for (Map.Entry<String, String> e : variables.entrySet()) {
+      if (e.getValue() == null) {
+        continue;
+      }
       String placeholder = "{{" + e.getKey() + "}}";
       result = result.replace(placeholder, e.getValue());
     }
