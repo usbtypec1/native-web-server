@@ -95,6 +95,14 @@ public class HttpHeaders {
   }
 
   /**
+   * Checks if a session cookie is present in the headers.
+   * @return true if a session cookie exists, false otherwise
+   */
+  public boolean hasSession() {
+    return getSession() != null;
+  }
+
+  /**
    * Sets a session cookie in the headers.
    *
    * <p>

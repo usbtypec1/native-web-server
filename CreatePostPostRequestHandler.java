@@ -1,11 +1,20 @@
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.Map;
-import java.util.UUID;
 
 public class CreatePostPostRequestHandler implements HttpRequestHandler {
+
+  private String getErrorMessage(String message) {
+    return String.format(
+        """
+            <div class="w-full max-w-xl mb-4">
+              <span class="block bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation"></i> %s
+              </span>
+            </div>""",
+        message);
+  }
 
   public HttpResponse getResponse(HttpRequest request) {
     Map<String, String> form = request.getForm();
@@ -14,14 +23,9 @@ public class CreatePostPostRequestHandler implements HttpRequestHandler {
 
     try {
       if (title == null || title.isBlank() || content == null || content.isBlank()) {
-        String errorMessage = """
-            <div class="w-full max-w-xl mb-4">
-              <span class="block bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
-                <i class="fa-solid fa-circle-exclamation"></i> Title and content cannot be empty.
-              </span>
-            </div>""";
-        String body = HtmlRenderer.renderWithVariables("create-post.html", Map.of("errorMessage", errorMessage));
-        return new HttpResponse(HttpResponseStatus.BadRequest, null, body);
+        String body = HtmlRenderer.renderWithVariables("create-post.html",
+            Map.of("errorMessage", getErrorMessage("Title and content cannot be empty.")));
+        return HttpResponseFactory.createBadRequestResponse(body);
       }
 
       String session = request.getHeaders().getSession();
@@ -36,9 +40,9 @@ public class CreatePostPostRequestHandler implements HttpRequestHandler {
       }
 
       PostRepository postRepository = new PostRepository();
-      Post post = new Post(UUID.randomUUID(), username, URLDecoder.decode(title, StandardCharsets.UTF_8),
-          URLDecoder.decode(content, StandardCharsets.UTF_8), Instant.now());
-      postRepository.createPost(post);
+      postRepository.createPost(username,
+          URLDecoder.decode(title, StandardCharsets.UTF_8),
+          URLDecoder.decode(content, StandardCharsets.UTF_8));
 
       return HttpResponseFactory.createRedirectResponse("/");
     } catch (IOException ioe) {

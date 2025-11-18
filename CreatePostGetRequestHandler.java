@@ -3,14 +3,12 @@ import java.io.IOException;
 public class CreatePostGetRequestHandler implements HttpRequestHandler {
 
   public HttpResponse getResponse(HttpRequest request) {
-    String session = request.getHeaders().getSession();
-    if (session == null) {
+    if (!request.getHeaders().hasSession()) {
       return HttpResponseFactory.createRedirectToLoginResponse();
     }
     try {
       SessionManager sessionManager = new SessionManager();
-      String username = sessionManager.getUsername(session);
-      if (username == null) {
+      if (!sessionManager.isAuthenticated(request.getHeaders().getSession())) {
         return HttpResponseFactory.createRedirectToLoginResponse();
       }
       return HttpResponseFactory.createOkResponse(HtmlRenderer.readTemplateFromFile("create-post.html"));

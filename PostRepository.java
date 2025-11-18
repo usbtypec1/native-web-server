@@ -18,12 +18,12 @@ public class PostRepository {
     }
   }
 
-  public void createPost(Post post) throws IOException {
-    String row = post.getId() + "," +
-        post.getUsername() + "," +
-        escape(post.getTitle()) + "," +
-        escape(post.getContent()) + "," +
-        post.getCreatedAt().toString();
+  public void createPost(String username, String title, String content) throws IOException {
+    String row = UUID.randomUUID().toString() + "," +
+        escape(username) + "," +
+        escape(title) + "," +
+        escape(content) + "," +
+        Instant.now().toString();
 
     Files.write(
         Resources.POSTS_FILE,

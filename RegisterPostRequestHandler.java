@@ -16,6 +16,13 @@ public class RegisterPostRequestHandler implements HttpRequestHandler {
         message);
   }
 
+  private String getPageWithError(String username, String errorMessage) throws IOException {
+    Map<String, String> variables = new HashMap<>();
+    variables.put("errorMessage", errorMessage);
+    variables.put("username", username);
+    return HtmlRenderer.renderWithVariables("register.html", variables);
+  }
+
   public HttpResponse getResponse(HttpRequest request) {
     Map<String, String> form = request.getForm();
     String username = form.get("username");
@@ -23,41 +30,32 @@ public class RegisterPostRequestHandler implements HttpRequestHandler {
     String confirmPassword = form.get("password2");
 
     try {
-      if (username == null || password == null || confirmPassword == null) {
-        String errorMessage = getErrorMessage("All fields are required");
-        Map<String, String> variables = new HashMap<>();
-        variables.put("errorMessage", errorMessage);
-        String body = HtmlRenderer.renderWithVariables("register.html", variables);
-        return HttpResponseFactory.createBadRequestResponse(body);
+      String usernameValidationError = InputValidator.validateUsername(username);
+      if (usernameValidationError != null) {
+        return HttpResponseFactory
+            .createBadRequestResponse(getPageWithError(username, getErrorMessage(usernameValidationError)));
       }
 
-      if (!password.equals(confirmPassword)) {
-        String errorMessage = getErrorMessage("Passwords do not match");
-        Map<String, String> variables = Map.of("errorMessage", errorMessage, "username", username);
-        String body = HtmlRenderer.renderWithVariables("register.html", variables);
-        return HttpResponseFactory.createBadRequestResponse(body);
+      String passwordsValidationError = InputValidator.validatePasswords(password, confirmPassword);
+      if (passwordsValidationError != null) {
+        return HttpResponseFactory
+            .createBadRequestResponse(getPageWithError(username, getErrorMessage(passwordsValidationError)));
       }
 
       UserRepository userRepository = new UserRepository();
       if (userRepository.existsByUsername(username)) {
-        String errorMessage = getErrorMessage("Username already taken");
-        Map<String, String> variables = Map.of("errorMessage", errorMessage, "username", username);
-        String body = HtmlRenderer.renderWithVariables("register.html", variables);
-        return HttpResponseFactory.createBadRequestResponse(body);
+        return HttpResponseFactory
+            .createBadRequestResponse(getPageWithError(username, getErrorMessage("Username is already taken")));
       }
-
-      String hashedPassword = PasswordHasher.hash(password);
 
       SessionManager sessionManager = new SessionManager();
       String session = sessionManager.createSession(username);
-      User newUser = new User(username, hashedPassword);
+      User newUser = new User(username, PasswordHasher.hash(password));
       try {
         userRepository.createUser(newUser);
       } catch (UserAlreadyExistsException e) {
-        String errorMessage = getErrorMessage(e.getMessage());
-        Map<String, String> variables = Map.of("errorMessage", errorMessage, "username", username);
-        String body = HtmlRenderer.renderWithVariables("register.html", variables);
-        return HttpResponseFactory.createBadRequestResponse(body);
+        return HttpResponseFactory
+            .createBadRequestResponse(getPageWithError(username, getErrorMessage(e.getMessage())));
       }
 
       HttpResponse response = HttpResponseFactory.createRedirectResponse("/");

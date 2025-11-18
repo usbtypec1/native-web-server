@@ -31,6 +31,10 @@ public class SessionManager {
     return sessionId;
   }
 
+  public boolean isAuthenticated(String session) throws IOException {
+    return getUsername(session) != null;
+  }
+
   public String getUsername(String session) throws IOException {
     List<String> lines = Files.readAllLines(file.toPath());
     long now = System.currentTimeMillis();
