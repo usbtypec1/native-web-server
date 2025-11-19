@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 public class CreatePostPostRequestHandler implements HttpRequestHandler {
@@ -23,8 +24,9 @@ public class CreatePostPostRequestHandler implements HttpRequestHandler {
 
     try {
       if (title == null || title.isBlank() || content == null || content.isBlank()) {
-        String body = HtmlRenderer.renderWithVariables("create-post.html",
-            Map.of("errorMessage", getErrorMessage("Title and content cannot be empty.")));
+        Map<String, String> variables = new HashMap<>();
+        variables.put("errorMessage", getErrorMessage("Title and content cannot be empty."));
+        String body = HtmlRenderer.renderWithVariables("create-post.html", variables);
         return HttpResponseFactory.createBadRequestResponse(body);
       }
 

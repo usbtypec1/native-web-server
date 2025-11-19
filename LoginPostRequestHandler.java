@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class LoginPostRequestHandler implements HttpRequestHandler {
@@ -20,10 +21,13 @@ public class LoginPostRequestHandler implements HttpRequestHandler {
     String username = form.get("username");
     String password = form.get("password");
 
+    Map<String, String> variables = new HashMap<>();
+
     try {
       if (username == null || password == null) {
         String errorMessage = getErrorMessage("Username or password is not provided");
-        String body = HtmlRenderer.renderWithVariables("login.html", Map.of("errorMessage", errorMessage));
+        variables.put("errorMessage", errorMessage);
+        String body = HtmlRenderer.renderWithVariables("login.html", variables);
         return HttpResponseFactory.createBadRequestResponse(body);
       }
 
@@ -33,8 +37,9 @@ public class LoginPostRequestHandler implements HttpRequestHandler {
         user = userRepository.getUserByUsername(username);
       } catch (UserNotFoundException e) {
         String errorMessage = getErrorMessage("User not found");
-        String body = HtmlRenderer.renderWithVariables("login.html",
-            Map.of("errorMessage", errorMessage, "username", username));
+        variables.put("errorMessage", errorMessage);
+        variables.put("username", username);
+        String body = HtmlRenderer.renderWithVariables("login.html", variables);
         return HttpResponseFactory.createBadRequestResponse(body);
       }
 
@@ -42,8 +47,9 @@ public class LoginPostRequestHandler implements HttpRequestHandler {
 
       if (!isPasswordCorrect) {
         String errorMessage = getErrorMessage("Invalid password");
-        String body = HtmlRenderer.renderWithVariables("login.html",
-            Map.of("errorMessage", errorMessage, "username", username));
+        variables.put("errorMessage", errorMessage);
+        variables.put("username", username);
+        String body = HtmlRenderer.renderWithVariables("login.html", variables);
         return HttpResponseFactory.createBadRequestResponse(body);
       }
 
